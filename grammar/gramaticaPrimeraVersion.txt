@@ -1,0 +1,150 @@
+/*grammar gramaticaPrimeraVersion;
+import PsiCoderLexerRules;
+
+program: declaration_before_main main declaration_after_main EOF;
+
+declaration_before_main: declaration declaration_before_main | ;
+
+declaration_after_main: declaration declaration_after_main | ;
+
+main: 'funcion_principal' main_body;
+
+main_body: body_feature main_body | 'fin_principal' ;
+
+body_feature: variable_declaration
+            | ID aux
+            | while_loop
+            | do_while
+            | for_loop
+            | mult_selection
+            | conditional
+            | read
+            | print
+            | 'romper' SEMI_COLON;
+
+data_type: primitive_data_type | ID;
+
+aux: ID variable_first_assignment
+   | struct_member variable_assignment
+   | function_call SEMI_COLON;
+
+variable_assignment: ASSIGN expression SEMI_COLON;
+
+declaration: struct_declaration | function_declaration;
+
+variable_declaration: primitive_data_type ID variable_first_assignment;
+
+primitive_data_type: 'booleano' | 'caracter' | 'entero' | 'real' | 'cadena';
+
+struct_member: DOT ID struct_member | ;
+
+variable_first_assignment: struct_member ASSIGN expression next_variable_first_assignment
+                         | next_variable_first_assignment;
+
+next_variable_first_assignment: COMMA ID variable_first_assignment | SEMI_COLON;
+
+struct_declaration: 'estructura' ID struct_variable_declaration 'fin_estructura';
+
+struct_variable_declaration: ID ID variable_first_assignment next_variable_declaration
+                           | variable_declaration next_variable_declaration
+                           | ;
+
+next_variable_declaration: struct_variable_declaration | ;
+
+function_declaration: 'funcion' data_type ID LEFT_PAR parameter RIGHT_PAR 'hacer' function_body;
+
+function_body: body_feature function_body | 'return' expression SEMI_COLON 'fin_funcion';
+
+parameter: data_type ID next_parameter | ;
+
+next_parameter: COMMA parameter | ;
+
+read: 'leer' LEFT_PAR ID follow_read;
+
+follow_read: DOT ID follow_read | RIGHT_PAR SEMI_COLON;
+
+print: 'imprimir' LEFT_PAR first_expression RIGHT_PAR SEMI_COLON;
+
+first_expression: expression next_expression;
+
+next_expression: COMMA first_expression | ;
+
+conditional: 'si' flag_expression 'entonces' conditional_body;
+
+flag_expression: LEFT_PAR expression RIGHT_PAR;
+
+conditional_body: body_feature conditional_body | remaining_conditional;
+
+remaining_conditional: 'si_no' else_conditional_body | 'fin_si';
+
+else_conditional_body: body_feature else_conditional_body | 'fin_si';
+
+while_loop: 'mientras' flag_expression 'hacer' while_body;
+
+while_body: body_feature while_body | 'fin_mientras';
+
+do_while: 'hacer' do_while_body;
+
+do_while_body: do_while_body_feature do_while_body | 'mientras' flag_expression determine_while;
+
+determine_while: 'hacer' while_body do_while_body | SEMI_COLON;
+
+do_while_body_feature: variable_declaration
+                     | ID aux
+                     | while_loop
+                     | for_loop
+                     | mult_selection
+                     | conditional
+                     | read
+                     | print
+                     | 'romper' SEMI_COLON;
+
+for_loop: 'para' for_params 'hacer' for_body;
+
+for_body: body_feature for_body | 'fin_para';
+
+for_params: LEFT_PAR for_variable expression SEMI_COLON for_step RIGHT_PAR;
+
+for_variable: 'entero' ID variable_first_assignment | ID variable_first_assignment;
+
+for_step: ID | INT;
+
+mult_selection: 'seleccionar' LEFT_PAR expression RIGHT_PAR 'entre' case_sel;
+
+case_sel: 'caso' value COLON case_body | 'defecto' COLON default_case_body;
+
+case_body: body_feature case_body | case_sel | 'fin_seleccionar';
+
+default_case_body: body_feature default_case_body |'fin_seleccionar';
+
+function_call: LEFT_PAR function_call_parameter RIGHT_PAR;
+
+function_call_parameter: expression next_function_call_parameter | next_function_call_parameter;
+
+next_function_call_parameter: COMMA function_call_parameter | ;
+
+value: ID | INT | REAL | STRING | CHAR | BOOLEAN;
+
+expression: factor mult_expression adition_expression comparison_expression
+            equality_expression boolean_and_expression boolean_or_expression;
+
+boolean_or_expression: OR expression | ;
+
+boolean_and_expression: AND factor mult_expression adition_expression
+                        comparison_expression equality_expression boolean_and_expression
+                      | ;
+
+equality_expression: EQUAL_OP factor mult_expression adition_expression comparison_expression equality_expression
+                      | ;
+
+comparison_expression: COMP_OP factor mult_expression adition_expression comparison_expression | ;
+
+adition_expression: ADD_OP factor mult_expression adition_expression | ;
+
+mult_expression: MULT_OP factor mult_expression | ;
+
+factor: 'verdadero' | 'falso' | '-' number | number | CHAR | STRING | NEG factor;
+
+number: INT | REAL | LEFT_PAR expression RIGHT_PAR | ID identifier;
+
+identifier: struct_member | function_call;*/
