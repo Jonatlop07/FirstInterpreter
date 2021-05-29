@@ -95,21 +95,22 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
         }
         return null;
     }
-    
+    /*
     @Override
     public PsiCoderType visitFunctionDeclaration( PsiCoderParser.FunctionDeclarationContext ctx ) {
         
     }
+    */
     
     /*@Override
     public PsiCoderType visitDataType( PsiCoderParser.DataTypeContext ctx ) {
         
-    }*/
+    }
     
     @Override
     public PsiCoderType visitReturnExpression( PsiCoderParser.ReturnExpressionContext ctx ) {
         
-    }
+    }*/
     
     public PsiCoderType visitVariableDeclaration( PsiCoderParser.VariableDeclarationContext ctx, String dataType ) {
         String identifier = ctx.ID().getText();
@@ -158,16 +159,16 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
         }
         return null;
     }
-    
+    /*
     @Override
     public PsiCoderType visitStructInstantiation( PsiCoderParser.StructInstantiationContext ctx ) {
         String structName = ctx.ID( 0 ).getText();
-        
+
         for ( int i = 1; i < ctx.ID().size(); ++i ) {
             scope.searchStruct( ctx.ID( i ).getText() );
             scope.addStruct( ctx.ID( i ).getText() );
         }
-    }
+    }*/
     
     @Override
     public PsiCoderType visitInstructions( PsiCoderParser.InstructionsContext ctx ) {

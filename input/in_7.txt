@@ -1,0 +1,6 @@
+funcion_principal
+    hacer
+        a = a/2;
+        imprimir(a);
+    mientras( a > 0 ); // debe terminar en punto y coma
+fin_principal
