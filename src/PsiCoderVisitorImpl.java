@@ -1,153 +1,369 @@
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Scanner;
+import java.util.function.Function;
 
 public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
-    private SymbolTable table = new SymbolTable( null );
+    private Map<String, Function> functions = new HashMap<>();
+    private Map<String, Struct> structs = new HashMap<>();
+    private Scope scope = new Scope( null, false );
     
-    public PsiCoderType visitInstructions( PsiCoderParser.InstructionsContext ctx ) {
+    @Override
+    public PsiCoderType visitProgram( PsiCoderParser.ProgramContext ctx ) {
+        if ( ctx.globalDeclaration().size() > 0 ) {
+            visitGlobalDeclaration( ctx.globalDeclaration( 0 ) );
+            
+            if ( ctx.globalDeclaration( 1 ) != null ) {
+                visitGlobalDeclaration( ctx.globalDeclaration( 1 ) );
+            }
+        }
+        return visitInstructions( ctx.instructions() );
+    }
+    
+    @Override
+    public PsiCoderType visitGlobalDeclaration( PsiCoderParser.GlobalDeclarationContext ctx ) {
+        ctx.structDeclaration().forEach( ( structDeclarationCtx ) -> visitStructDeclaration( structDeclarationCtx ) );
+        ctx.functionDeclaration().forEach( ( functionDeclarationCtx ) -> visitFunctionDeclaration( functionDeclarationCtx ) );
+        return null;
+    }
+    
+    private PsiCoderType getDefaultValueByDataType( String dataType ) {
+        PsiCoderType result = new PsiCoderType( null );
+        
+        switch ( dataType ) {
+            case "booleano":
+                result = new PsiCoderType( ( Boolean ) null );
+                break;
+            case "caracter":
+                result = new PsiCoderType( ( Character ) null );
+                break;
+            case "entero":
+                result = new PsiCoderType( ( Integer ) null );
+                break;
+            case "real":
+                result = new PsiCoderType( ( Double ) null );
+                break;
+            case "cadena":
+                result = new PsiCoderType( ( String ) null );
+                break;
+        }
+        return result;
+    }
+    
+    @Override
+    public PsiCoderType visitStructDeclaration( PsiCoderParser.StructDeclarationContext ctx ) {
+        String structId = ctx.ID().getText();
+        
+        if ( !structs.containsKey( structId ) ) {
+            structs.put( structId, new Struct() );
+            ctx.structMember().forEach( structMemberContext -> visitStructMember( structMemberContext, structId ) );
+        } else {
+            //Error semantico: Una estructura con el mismo identificador ha sido declarada
+        }
+        return null;
+    }
+    
+    public PsiCoderType visitStructMember( PsiCoderParser.StructMemberContext ctx, String structId ) {
+        if ( ctx.DATA_TYPE() != null ) {
+            String dataType = ctx.DATA_TYPE().getText();
+            PsiCoderType defaultValue = getDefaultValueByDataType( dataType );
+            ctx.ID()
+                .stream()
+                .map( memberIdNode -> memberIdNode.getText() )
+                .forEach( memberId -> {
+                    if ( structs.get( structId ).getAtomic().containsKey( memberId ) ) {
+                        structs.get( structId ).getAtomic().put( memberId, defaultValue );
+                    } else {
+                        //Error semantico: Miembro de la estructura 'structId', 'memberId' ya definido
+                    }
+                } );
+        } else {
+            String structMemberId = ctx.ID().remove( 0 ).getText();
+            if ( !structs.containsKey( structMemberId ) ) {
+                //Error semantico: La estructura 'structMemberId' no se encuentra declarada
+            }
+            ctx.ID()
+                .stream()
+                .map( memberIdNode -> memberIdNode.getText() )
+                .forEach( memberId -> {
+                    if ( structs.get( structId ).getCompound().containsKey( memberId )) {
+                        structs.get( structId ).getCompound().put( memberId, structMemberId );
+                    } else {
+                        //Error semantico: Miembro de la estructura 'structId', 'memberId' ya definido
+                    }
+                } );
+        }
+        return null;
+    }
+    
+    @Override
+    public PsiCoderType visitFunctionDeclaration( PsiCoderParser.FunctionDeclarationContext ctx ) {
         
     }
     
-    public PsiCoderType visitRead( PsiCoderParser.ReadContext ctx ) {
-        int i = 0;
-        if ( ctx.DOT( i ) != null ) {
-            while ( ctx.DOT( i ) != null ) {
+    /*@Override
+    public PsiCoderType visitDataType( PsiCoderParser.DataTypeContext ctx ) {
+        
+    }*/
+    
+    @Override
+    public PsiCoderType visitReturnExpression( PsiCoderParser.ReturnExpressionContext ctx ) {
+        
+    }
+    
+    public PsiCoderType visitVariableDeclaration( PsiCoderParser.VariableDeclarationContext ctx, String dataType ) {
+        String identifier = ctx.ID().getText();
+        
+        if ( scope.searchId( identifier, false ) == null ) {
+            if ( ctx.expression() != null ) {
+                PsiCoderType value = visit( ctx.expression() );
+                
+                if ( dataType.equals( "booleano" ) && value.isBoolean() ) {
+                    scope.add( identifier, new PsiCoderType( value.toBoolean() ) );
+                } else if ( dataType.equals( "caracter" ) && value.isCharacter() ) {
+                    scope.add( identifier, new PsiCoderType( value.toCharacter() ) );
+                } else if ( dataType.equals( "entero" ) && value.isInteger() ) {
+                    scope.add( identifier, new PsiCoderType( value.toInteger() ) );
+                } else if ( dataType.equals( "real" ) && value.isReal() ) {
+                    scope.add( identifier, new PsiCoderType( value.toReal() ) );
+                } else if ( dataType.equals( "cadena" ) && value.isString() ) {
+                    scope.add( identifier, new PsiCoderType( value.toStringType() ) );
+                } else {
+                    // Error semantico, se esperaba un valor de tipo 'dataType'
+                }
+            } else
+                scope.add( identifier, getDefaultValueByDataType( dataType ) );
+        } else {
+            // Error semantico, variable ya declarada
+        }
+        
+        return null;
+    }
+    
+    @Override
+    public PsiCoderType visitVariableAssignment( PsiCoderParser.VariableAssignmentContext ctx ) {
+        String identifier = ctx.ID( 0 ).getText();
+        PsiCoderType value = visit( ctx.expression() );
+        
+        if ( ctx.ID().size() > 1 ) {
+            for ( int i = 1; i < ctx.ID().size(); ++i ) {
                 /*Mirar si la estructura (clase) tiene dicha variable miembro
                 y llevar control de esta*/
             }
+        } else {
+            if ( scope.searchId( identifier ) != null ) scope.add( identifier, value );
+            else {
+                //Error semantico, variable no declarada
+            }
         }
+        return null;
+    }
+    
+    @Override
+    public PsiCoderType visitStructInstantiation( PsiCoderParser.StructInstantiationContext ctx ) {
+        String structName = ctx.ID( 0 ).getText();
         
-        Scanner in = new Scanner( System.in );
-        table.updateValue( "" /*identificador*/, in.next() );
+        for ( int i = 1; i < ctx.ID().size(); ++i ) {
+            scope.searchStruct( ctx.ID( i ).getText() );
+            scope.addStruct( ctx.ID( i ).getText() );
+        }
+    }
+    
+    @Override
+    public PsiCoderType visitInstructions( PsiCoderParser.InstructionsContext ctx ) {
+        return visitChildren( ctx );
+    }
+    
+    @Override
+    public PsiCoderType visitInstruction( PsiCoderParser.InstructionContext ctx ) {
+        if ( ctx.DATA_TYPE() != null )
+            ctx.variableDeclaration().forEach(
+                variableDeclarationContext ->
+                    visitVariableDeclaration( variableDeclarationContext, ctx.DATA_TYPE().getText() ) );
+        else if ( ctx.variableAssignment( 0 ) != null )
+            ctx.variableAssignment().forEach(
+                variableAssignmentContext ->
+                    visitVariableAssignment( variableAssignmentContext )
+            );
+        else return visitChildren( ctx );
         
         return null;
     }
     
-    
-    public PsiCoderType visitPrint( PsiCoderParser.PrintContext ctx ) {
-        String toPrint = "";
-        int i = 0;
+    @Override
+    public PsiCoderType visitRead( PsiCoderParser.ReadContext ctx ) {
+        Scanner in = new Scanner( System.in );
+        String identifier = ctx.ID( 0 ).getText();
         
-        while ( ctx.expression( i ) != null ) {
-            toPrint += visitExpression( ctx.expression( i ) );
-            i++;
-        }
+        if ( ctx.ID().size() > 1 ) {
+            for ( int i = 1; i < ctx.ID().size(); ++i ) {
+                /*Mirar si la estructura (clase) tiene dicha variable miembro
+                y llevar control de esta*/
+            }
+        } else
+            scope.add( identifier, new PsiCoderType( in.next() ) );
+        
+        return null;
+    }
+    
+    @Override
+    public PsiCoderType visitPrint( PsiCoderParser.PrintContext ctx ) {
+        int i = 0;
+        String toPrint = "";
+        
+        do {
+            toPrint += String.valueOf( visit( ctx.expression( i ) ).getValue() );
+        } while ( ctx.expression( ++i ) != null );
         
         System.out.println( toPrint );
-        
         return null;
     }
     
-    
+    @Override
     public PsiCoderType visitConditional( PsiCoderParser.ConditionalContext ctx ) {
-        visitExpression( ctx.expression() );
-        visitInstructions( ctx.instructions( 0 ) );
-        
-        if ( ctx.THEN() != null ) {
-            visitInstructions( ctx.instructions( 1 ) );
+        if ( visit( ctx.expression() ).isBoolean() ) {
+            scope = new Scope( scope, false );
+            
+            if ( ( Boolean ) visit( ctx.expression() ).getValue() )
+                visitInstructions( ctx.instructions( 0 ) );
+            else if ( ctx.THEN() != null )
+                visitInstructions( ctx.instructions( 0 ) );
+            
+            scope = scope.getParentScope();
+        } else {
+            //Error semantico
         }
-        
         return null;
     }
     
+    @Override
     public PsiCoderType visitWhileLoop( PsiCoderParser.WhileLoopContext ctx ) {
-        while ( ( Boolean ) visitExpression( ctx.expression() ) ) {
-            visitInstructions( ctx.instructions() );
+        if ( visit( ctx.expression() ).isBoolean() ) {
+            scope = new Scope( scope, false );
+            
+            while ( ( Boolean ) visit( ctx.expression() ).getValue() )
+                visitInstructions( ctx.instructions() );
+            
+            scope = scope.getParentScope();
+        } else {
+            // Error semantico
         }
-        
         return null;
     }
     
+    @Override
     public PsiCoderType visitDoWhile( PsiCoderParser.DoWhileContext ctx ) {
-        do {
-            visitInstructions( ctx.instructions() );
-        } while ( ( Boolean ) visitExpression( ctx.expression() ) );
-        
+        if ( visit( ctx.expression() ).isBoolean() ) {
+            scope = new Scope( scope, false );
+            
+            do
+                visitInstructions( ctx.instructions() );
+            while ( ( Boolean ) visit( ctx.expression() ).getValue() );
+            
+            scope = scope.getParentScope();
+        } else {
+            // Error semantico
+        }
         return null;
     }
     
+    @Override
     public PsiCoderType visitForLoop( PsiCoderParser.ForLoopContext ctx ) {
-        PsiCoderType loopVarValue = visitExpression( ctx.expression( 0 ) );
+        scope = new Scope( scope, false );
         
-        if ( ctx.INTEGER() != null ) {
-            table.addSymbol( ctx.ID( 0 ).getText(), loopVarValue, ctx.INTEGER().getText() );
+        int expressionIndex = 0;
+        String loopVarId = ctx.ID( 0 ).getText();
+        
+        if ( ctx.INTEGER() != null || ( ctx.expression().size() > 1 ) ) {
+            PsiCoderType loopVarValue = visit( ctx.expression( expressionIndex++ ) );
+            if ( loopVarValue.isInteger() ) {
+                if ( ctx.INTEGER() != null ) {
+                    scope.add( loopVarId, loopVarValue );
+                } else {
+                    scope.getParentScope().add( loopVarId, loopVarValue );
+                }
+            } else {
+                //Error semantico
+            }
+        }
+        
+        int index = ( Integer ) scope.searchId( loopVarId ).getValue();
+        
+        if ( visit( ctx.expression( expressionIndex ) ).isBoolean() ) {
+            int loopStep = ( ctx.ID( 1 ) != null )
+                ? ( Integer ) scope.searchId( ctx.ID( 1 ).getText() ).getValue()
+                : Integer.parseInt( ctx.INTEGER().getText() );
+            
+            while ( ( Boolean ) visit( ctx.expression( expressionIndex ) ).getValue() ) {
+                visitInstructions( ctx.instructions() );
+                PsiCoderType updatedLoopVarId = new PsiCoderType(
+                    ( Integer ) scope.searchId( loopVarId ).getValue() + loopStep
+                );
+                updatedLoopVarId.toInteger();
+                scope.add( loopVarId, updatedLoopVarId );
+            }
         } else {
-            //Modificar el valor de la variable
+            //Error semantico
         }
         
-        Boolean flagExpression = ;
-        Integer step;
-        
-        if ( ctx.ID() != null ) {
-            //Asignar el valor de la variable a step
-        } else {
-            step = Integer.valueOf( ctx.ID( 1 ).getText() );
-        }
-        
-        while ( ( Boolean ) visitExpression( ctx.expression( 1 ) ) ) {
-            visitInstructions( ctx.instructions() );
-            //Aumentar la variable una cantidad igual a step
-        }
+        scope = scope.getParentScope();
+        return null;
     }
     
+    @Override
     public PsiCoderType visitMultSelection( PsiCoderParser.MultSelectionContext ctx ) {
-        PsiCoderType expression = visitExpression( ctx.expression() );
+        boolean ignoreMatch = false;
+        PsiCoderType expression = visit( ctx.expression() );
         
         int i = 0;
         
         if ( ctx.CASE( i ) != null ) {
-            if ( visitValue( ctx.value( i ) ).equals( expression ) ) {
-                visitInstructions( ctx.instructions( ctx.instructions().size() - 1 ) );
-            }
+            do {
+                if ( ignoreMatch || visitPrimitiveValue( ctx.primitiveValue( i ) ).equals( expression ) ) {
+                    scope = new Scope( scope, false );
+                    visitInstructions( ctx.instructions( i ) );
+                    scope = scope.getParentScope();
+                    if ( ctx.ROMPER() == null ) ignoreMatch = true;
+                    else return null;
+                }
+            } while ( ctx.CASE( ++i ) != null );
             
-            while ( ctx.CASE( ++i ) != null ) {
-                visitInstructions( ctx.instructions( i ) );
-            }
-            
-            if ( ctx.defaultCase() != null ) {
-                visitDefaultCase( ctx.defaultCase() );
-            }
-        } else {
-            visitDefaultCase( ctx.defaultCase() );
-        }
+            return ( ctx.defaultCase() != null ? visitDefaultCase( ctx.defaultCase() ) : null );
+        } else
+            return visitDefaultCase( ctx.defaultCase() );
     }
     
     public PsiCoderType visitDefaultCase( PsiCoderParser.DefaultCaseContext ctx ) {
-        if ( ctx.ROMPER() != null ) {
-            visitInstructions( ctx.instructions() );
-            return null;
-        }
-        
-        return visitInstructions( ctx.instructions() );
+        scope = new Scope( scope, false );
+        visitInstructions( ctx.instructions() );
+        scope = scope.getParentScope();
+        return null;
     }
     
+    @Override
     public PsiCoderType visitFunctionCall( PsiCoderParser.FunctionCallContext ctx ) {
-        
+        ctx.ID();
+        int i = 0;
+        if ( ctx.expression( i ) != null ) {
+            do {
+                //Evaluar argumentos y tipo de retorno
+                visit( ctx.expression( i ) );
+            } while ( ctx.expression( ++i ) != null );
+        }
+        return null;
     }
     
-    public PsiCoderType visitValue( PsiCoderParser.ValueContext ctx ) {
-        if ( ctx.ID() != null ) {
-            
-        }
-        
-        if ( ctx.INT() != null ) {
+    @Override
+    public PsiCoderType visitPrimitiveValue( PsiCoderParser.PrimitiveValueContext ctx ) {
+        if ( ctx.INT() != null )
             return new PsiCoderType( Integer.valueOf( ctx.INT().getText() ) );
-        }
-        
-        if ( ctx.REAL() != null ) {
+        if ( ctx.REAL() != null )
             return new PsiCoderType( Double.valueOf( ctx.REAL().getText() ) );
-        }
-        
-        if ( ctx.STRING() != null ) {
+        if ( ctx.STRING() != null )
             return new PsiCoderType( ctx.STRING().getText() );
-        }
-        
-        if ( ctx.CHAR() != null ) {
+        if ( ctx.CHAR() != null )
             return new PsiCoderType( Character.valueOf( ctx.CHAR().getText().charAt( 0 ) ) );
-        }
-        
-        if ( ctx.BOOLEAN() != null ) {
-            return new PsiCoderType( Boolean.valueOf( ctx.BOOLEAN().getText() ) );
-        }
+        return new PsiCoderType( Boolean.valueOf( ctx.BOOLEAN().getText() ) );
     }
     
     @Override
@@ -201,9 +417,8 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
         if ( ctx.AD_OP().getText().equals( "+" ) ) {
             if ( leftExprResult.isString() )
                 return new PsiCoderType( leftExprResult.toStringType() + "" + rightExprResult.toString() );
-            if ( rightExprResult.isString() ) {
+            if ( rightExprResult.isString() )
                 return new PsiCoderType( leftExprResult.toString() + "" + rightExprResult.toStringType() );
-            }
         }
         
         if ( ( !leftExprResult.isInteger() && !leftExprResult.isReal() )
@@ -278,28 +493,8 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
     }
     
     @Override
-    public PsiCoderType visitIntValExpression( PsiCoderParser.IntValExpressionContext ctx ) {
-        return new PsiCoderType( Integer.valueOf( ctx.INT().getText() ) );
-    }
-    
-    @Override
-    public PsiCoderType visitRealValExpression( PsiCoderParser.RealValExpressionContext ctx ) {
-        return new PsiCoderType( Double.valueOf( ctx.REAL().getText() ) );
-    }
-    
-    @Override
-    public PsiCoderType visitBooleanValExpression( PsiCoderParser.BooleanValExpressionContext ctx ) {
-        return new PsiCoderType( Boolean.valueOf( ctx.BOOLEAN().getText() ) );
-    }
-    
-    @Override
-    public PsiCoderType visitCharValExpression( PsiCoderParser.CharValExpressionContext ctx ) {
-        return new PsiCoderType( Character.valueOf( ctx.CHAR().getText().charAt( 0 ) ) );
-    }
-    
-    @Override
-    public PsiCoderType visitStringValExpression( PsiCoderParser.StringValExpressionContext ctx ) {
-        return new PsiCoderType( ctx.STRING().getText() );
+    public PsiCoderType visitPrimitiveValExpression( PsiCoderParser.PrimitiveValExpressionContext ctx ) {
+        return visitPrimitiveValue( ctx.primitiveValue() );
     }
     
     @Override
@@ -309,6 +504,10 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
         if ( ctx.DOT( 0 ) != null ) {
             //PENDIENTE
         }
+        
+        PsiCoderType value = scope.searchId( identifier );
+        
+        return value;
     }
     
     @Override
@@ -363,152 +562,4 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
         }
         return null;
     }
-    
-    /*public T visitExpression( PsiCoderParser.ExpressionContext ctx ) {
-        T expression1 = visitExpression( ctx.expression() );
-        T expression2 = visitAndExpression( ctx.andExpression() );
-        
-        if ( expression1 != null ) {
-            return ( T ) ( Boolean ) ( ( Boolean ) expression1 || ( Boolean ) expression2 ));
-        }
-        return expression2;
-    }
-    
-    public T visitAndExpression( PsiCoderParser.AndExpressionContext ctx ) {
-        T expression1 = visitAndExpression( ctx.andExpression() );
-        T expression2 = visitEqualityExpression( ctx.equalityExpression() );
-        
-        if ( expression1 != null ) {
-            return ( T ) ( ( Boolean ) ( ( Boolean ) expression1 && ( Boolean ) expression2 ) );
-        }
-        return expression2;
-    }
-    
-    public T visitEqualityExpression( PsiCoderParser.EqualityExpressionContext ctx ) {
-        T expression1 = visitEqualityExpression( ctx.equalityExpression() );
-        T expression2 = visitComparisonExpression( ctx.comparisonExpression() );
-        
-        if ( expression1 != null ) {
-            Boolean expression;
-            
-            if ( ctx.EQUAL_OP().getText().equals( "==" ) ) {
-                expression = expression1.equals( expression2 );
-            } else {
-                expression = !expression1.equals( expression2 );
-            }
-            
-            return ( T ) expression;
-        }
-        return expression2;
-    }
-    
-    public T visitComparisonExpression( PsiCoderParser.ComparisonExpressionContext ctx ) {
-        T expression1 = visitComparisonExpression( ctx.comparisonExpression() );
-        T expression2 = visitAditionExpression( ctx.aditionExpression() );
-        
-        if ( expression1 != null ) {
-            Boolean expression;
-            
-            if ( ctx.COMP_OP().getText().equals( "<" ) ) {
-                expression = expression1 < expression2;
-            } else if ( ctx.COMP_OP().getText().equals( "<=" ) ) {
-                expression = expression1 <= expression2;
-            } else if ( ctx.COMP_OP().getText().equals( ">" ) ) {
-                expression = expression1 > expression2;
-            } else {
-                expression = expression1 >= expression2;
-            }
-            
-            return ( T ) expression;
-        }
-        
-        return expression2;
-    }
-    
-    public T visitAditionExpression( PsiCoderParser.AditionExpressionContext ctx ) {
-        T expression1 = visitAditionExpression( ctx.aditionExpression() );
-        T expression2 = visitMultExpression( ctx.multExpression() );
-        
-        if ( expression1 != null ) {
-            if ( ctx.AD_OP().getText().equals( "+" ) ) {
-                return expression1 + expression2;
-            } else {
-                return expression1 - expression2;
-            }
-        }
-        
-        return expression2;
-    }
-    
-    public T visitMultExpression( PsiCoderParser.MultExpressionContext ctx ) {
-        T expression1 = visitMultExpression( ctx.multExpression() );
-        T factor = visitFactor( ctx.factor() );
-        
-        if ( expression1 != null ) {
-            if ( ctx.MULT_OP().getText().equals( "*" ) ) {
-                return ( T ) expression1 * factor;
-            } else {
-                return ( T ) expression1 / factor;
-            }
-        }
-        
-        return factor;
-    }
-    
-    @Override
-    public T visitFactor( PsiCoderParser.FactorContext ctx ) {
-        if ( ctx.BOOLEAN() != null ) {
-            Boolean bool = Boolean.valueOf( ctx.BOOLEAN().getText() );
-            return ( T ) bool;
-        }
-        
-        if ( ctx.INT() != null ) {
-            Integer num = Integer.valueOf( ctx.INT().getText() );
-            return ( T ) ( ( ctx.MINUS() != null ) ? Integer.valueOf( -num ) : num );
-        }
-        
-        if ( ctx.CHAR() != null ) {
-            return ( T ) Character.valueOf( ctx.CHAR().getText().charAt( 0 ) );
-        }
-        
-        if ( ctx.STRING() != null ) {
-            return ( T ) ctx.STRING().getText();
-        }
-        
-        if ( ctx.REAL() != null ) {
-            Double num = Double.valueOf( ctx.REAL().getText() );
-            return ( T ) ( ( ctx.MINUS() != null ) ? Double.valueOf( -num ) : num );
-        }
-        
-        if ( ctx.NEG() != null ) {
-            Boolean expression = ( Boolean ) visitFactor( ctx );
-            return ( T ) expression;
-        }
-        
-        if ( ctx.LEFT_PAR() != null ) {
-            return visitExpression( ctx.expression() );
-        }
-        
-        if ( ctx.ID() != null ) {
-            String name = ctx.ID( 0 ).getText();
-            Object value;
-            
-            if ( !table.hasSymbol( name ) ) {
-                int line = ctx.ID( 0 ).getSymbol().getLine();
-                int col = ctx.ID( 0 ).getSymbol().getCharPositionInLine() + 1;
-                
-                System.err.printf( "<%d:%d> Error semantico, la variable con nombre \"" + name + "\" no fue declarada.\n", line, col );
-                System.exit( -1 );
-            }
-            
-            value = table.getValue( name );
-            
-            if ( ctx.DOT( 0 ) != null ) {
-                String memberName = ctx.ID( 1 ).getText();
-                
-                
-            } else if ( ctx.LEFT_PAR() != null ) {
-            } else return ( T ) value;
-        }
-    }*/
 }

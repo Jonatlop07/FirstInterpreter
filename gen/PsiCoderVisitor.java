@@ -16,23 +16,29 @@ public interface PsiCoderVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitProgram(PsiCoderParser.ProgramContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link PsiCoderParser#globalDeclaration}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitGlobalDeclaration(PsiCoderParser.GlobalDeclarationContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link PsiCoderParser#structDeclaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitStructDeclaration(PsiCoderParser.StructDeclarationContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link PsiCoderParser#structMember}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStructMember(PsiCoderParser.StructMemberContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link PsiCoderParser#functionDeclaration}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitFunctionDeclaration(PsiCoderParser.FunctionDeclarationContext ctx);
-	/**
-	 * Visit a parse tree produced by {@link PsiCoderParser#dataType}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitDataType(PsiCoderParser.DataTypeContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link PsiCoderParser#returnExpression}.
 	 * @param ctx the parse tree
@@ -52,95 +58,23 @@ public interface PsiCoderVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitVariableAssignment(PsiCoderParser.VariableAssignmentContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link PsiCoderParser#structInstantiation}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStructInstantiation(PsiCoderParser.StructInstantiationContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link PsiCoderParser#instructions}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitInstructions(PsiCoderParser.InstructionsContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code instructionVarDec}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
+	 * Visit a parse tree produced by {@link PsiCoderParser#instruction}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitInstructionVarDec(PsiCoderParser.InstructionVarDecContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code instructionStructDeclaration}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitInstructionStructDeclaration(PsiCoderParser.InstructionStructDeclarationContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code instructionFunctionCall}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitInstructionFunctionCall(PsiCoderParser.InstructionFunctionCallContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code instructionAsig}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitInstructionAsig(PsiCoderParser.InstructionAsigContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code instructionWhileLoop}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitInstructionWhileLoop(PsiCoderParser.InstructionWhileLoopContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code instructionDoWhile}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitInstructionDoWhile(PsiCoderParser.InstructionDoWhileContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code instructionForLoop}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitInstructionForLoop(PsiCoderParser.InstructionForLoopContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code instructionMultSelect}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitInstructionMultSelect(PsiCoderParser.InstructionMultSelectContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code instructionConditional}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitInstructionConditional(PsiCoderParser.InstructionConditionalContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code instructionRead}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitInstructionRead(PsiCoderParser.InstructionReadContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code instructionPrint}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitInstructionPrint(PsiCoderParser.InstructionPrintContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code instructionReturn}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitInstructionReturn(PsiCoderParser.InstructionReturnContext ctx);
+	T visitInstruction(PsiCoderParser.InstructionContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link PsiCoderParser#read}.
 	 * @param ctx the parse tree
@@ -196,32 +130,11 @@ public interface PsiCoderVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunctionCall(PsiCoderParser.FunctionCallContext ctx);
 	/**
-	 * Visit a parse tree produced by {@link PsiCoderParser#value}.
+	 * Visit a parse tree produced by {@link PsiCoderParser#primitiveValue}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitValue(PsiCoderParser.ValueContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code minusExpression}
-	 * labeled alternative in {@link PsiCoderParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitMinusExpression(PsiCoderParser.MinusExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code booleanValExpression}
-	 * labeled alternative in {@link PsiCoderParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitBooleanValExpression(PsiCoderParser.BooleanValExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code adExpression}
-	 * labeled alternative in {@link PsiCoderParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitAdExpression(PsiCoderParser.AdExpressionContext ctx);
+	T visitPrimitiveValue(PsiCoderParser.PrimitiveValueContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code orExpression}
 	 * labeled alternative in {@link PsiCoderParser#expression}.
@@ -244,6 +157,13 @@ public interface PsiCoderVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitAndExpression(PsiCoderParser.AndExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code minusExpression}
+	 * labeled alternative in {@link PsiCoderParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitMinusExpression(PsiCoderParser.MinusExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code idExpression}
 	 * labeled alternative in {@link PsiCoderParser#expression}.
 	 * @param ctx the parse tree
@@ -258,33 +178,12 @@ public interface PsiCoderVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitCompExpression(PsiCoderParser.CompExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code charValExpression}
-	 * labeled alternative in {@link PsiCoderParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitCharValExpression(PsiCoderParser.CharValExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code stringValExpression}
-	 * labeled alternative in {@link PsiCoderParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitStringValExpression(PsiCoderParser.StringValExpressionContext ctx);
-	/**
 	 * Visit a parse tree produced by the {@code nestedExpression}
 	 * labeled alternative in {@link PsiCoderParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
 	T visitNestedExpression(PsiCoderParser.NestedExpressionContext ctx);
-	/**
-	 * Visit a parse tree produced by the {@code realValExpression}
-	 * labeled alternative in {@link PsiCoderParser#expression}.
-	 * @param ctx the parse tree
-	 * @return the visitor result
-	 */
-	T visitRealValExpression(PsiCoderParser.RealValExpressionContext ctx);
 	/**
 	 * Visit a parse tree produced by the {@code functionCallExpression}
 	 * labeled alternative in {@link PsiCoderParser#expression}.
@@ -300,6 +199,13 @@ public interface PsiCoderVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitMultExpression(PsiCoderParser.MultExpressionContext ctx);
 	/**
+	 * Visit a parse tree produced by the {@code adExpression}
+	 * labeled alternative in {@link PsiCoderParser#expression}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitAdExpression(PsiCoderParser.AdExpressionContext ctx);
+	/**
 	 * Visit a parse tree produced by the {@code negExpression}
 	 * labeled alternative in {@link PsiCoderParser#expression}.
 	 * @param ctx the parse tree
@@ -307,10 +213,10 @@ public interface PsiCoderVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitNegExpression(PsiCoderParser.NegExpressionContext ctx);
 	/**
-	 * Visit a parse tree produced by the {@code intValExpression}
+	 * Visit a parse tree produced by the {@code primitiveValExpression}
 	 * labeled alternative in {@link PsiCoderParser#expression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
 	 */
-	T visitIntValExpression(PsiCoderParser.IntValExpressionContext ctx);
+	T visitPrimitiveValExpression(PsiCoderParser.PrimitiveValExpressionContext ctx);
 }

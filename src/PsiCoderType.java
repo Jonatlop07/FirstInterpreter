@@ -1,4 +1,5 @@
 public class PsiCoderType implements Comparable<PsiCoderType> {
+    
     private Object value;
     
     public PsiCoderType( Object value ) {

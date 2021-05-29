@@ -27,6 +27,18 @@ public class PsiCoderBaseListener implements PsiCoderListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterGlobalDeclaration(PsiCoderParser.GlobalDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitGlobalDeclaration(PsiCoderParser.GlobalDeclarationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterStructDeclaration(PsiCoderParser.StructDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -39,6 +51,18 @@ public class PsiCoderBaseListener implements PsiCoderListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterStructMember(PsiCoderParser.StructMemberContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStructMember(PsiCoderParser.StructMemberContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterFunctionDeclaration(PsiCoderParser.FunctionDeclarationContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -46,18 +70,6 @@ public class PsiCoderBaseListener implements PsiCoderListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitFunctionDeclaration(PsiCoderParser.FunctionDeclarationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterDataType(PsiCoderParser.DataTypeContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitDataType(PsiCoderParser.DataTypeContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -99,6 +111,18 @@ public class PsiCoderBaseListener implements PsiCoderListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterStructInstantiation(PsiCoderParser.StructInstantiationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStructInstantiation(PsiCoderParser.StructInstantiationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterInstructions(PsiCoderParser.InstructionsContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -111,145 +135,13 @@ public class PsiCoderBaseListener implements PsiCoderListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterInstructionVarDec(PsiCoderParser.InstructionVarDecContext ctx) { }
+	@Override public void enterInstruction(PsiCoderParser.InstructionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitInstructionVarDec(PsiCoderParser.InstructionVarDecContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterInstructionStructDeclaration(PsiCoderParser.InstructionStructDeclarationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitInstructionStructDeclaration(PsiCoderParser.InstructionStructDeclarationContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterInstructionFunctionCall(PsiCoderParser.InstructionFunctionCallContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitInstructionFunctionCall(PsiCoderParser.InstructionFunctionCallContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterInstructionAsig(PsiCoderParser.InstructionAsigContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitInstructionAsig(PsiCoderParser.InstructionAsigContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterInstructionWhileLoop(PsiCoderParser.InstructionWhileLoopContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitInstructionWhileLoop(PsiCoderParser.InstructionWhileLoopContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterInstructionDoWhile(PsiCoderParser.InstructionDoWhileContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitInstructionDoWhile(PsiCoderParser.InstructionDoWhileContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterInstructionForLoop(PsiCoderParser.InstructionForLoopContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitInstructionForLoop(PsiCoderParser.InstructionForLoopContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterInstructionMultSelect(PsiCoderParser.InstructionMultSelectContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitInstructionMultSelect(PsiCoderParser.InstructionMultSelectContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterInstructionConditional(PsiCoderParser.InstructionConditionalContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitInstructionConditional(PsiCoderParser.InstructionConditionalContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterInstructionRead(PsiCoderParser.InstructionReadContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitInstructionRead(PsiCoderParser.InstructionReadContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterInstructionPrint(PsiCoderParser.InstructionPrintContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitInstructionPrint(PsiCoderParser.InstructionPrintContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterInstructionReturn(PsiCoderParser.InstructionReturnContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitInstructionReturn(PsiCoderParser.InstructionReturnContext ctx) { }
+	@Override public void exitInstruction(PsiCoderParser.InstructionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -363,49 +255,13 @@ public class PsiCoderBaseListener implements PsiCoderListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterValue(PsiCoderParser.ValueContext ctx) { }
+	@Override public void enterPrimitiveValue(PsiCoderParser.PrimitiveValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitValue(PsiCoderParser.ValueContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterMinusExpression(PsiCoderParser.MinusExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitMinusExpression(PsiCoderParser.MinusExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterBooleanValExpression(PsiCoderParser.BooleanValExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitBooleanValExpression(PsiCoderParser.BooleanValExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterAdExpression(PsiCoderParser.AdExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitAdExpression(PsiCoderParser.AdExpressionContext ctx) { }
+	@Override public void exitPrimitiveValue(PsiCoderParser.PrimitiveValueContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -447,6 +303,18 @@ public class PsiCoderBaseListener implements PsiCoderListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterMinusExpression(PsiCoderParser.MinusExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitMinusExpression(PsiCoderParser.MinusExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterIdExpression(PsiCoderParser.IdExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -471,30 +339,6 @@ public class PsiCoderBaseListener implements PsiCoderListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterCharValExpression(PsiCoderParser.CharValExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitCharValExpression(PsiCoderParser.CharValExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterStringValExpression(PsiCoderParser.StringValExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitStringValExpression(PsiCoderParser.StringValExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
 	@Override public void enterNestedExpression(PsiCoderParser.NestedExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -502,18 +346,6 @@ public class PsiCoderBaseListener implements PsiCoderListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitNestedExpression(PsiCoderParser.NestedExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void enterRealValExpression(PsiCoderParser.RealValExpressionContext ctx) { }
-	/**
-	 * {@inheritDoc}
-	 *
-	 * <p>The default implementation does nothing.</p>
-	 */
-	@Override public void exitRealValExpression(PsiCoderParser.RealValExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -543,6 +375,18 @@ public class PsiCoderBaseListener implements PsiCoderListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterAdExpression(PsiCoderParser.AdExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitAdExpression(PsiCoderParser.AdExpressionContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterNegExpression(PsiCoderParser.NegExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -555,13 +399,13 @@ public class PsiCoderBaseListener implements PsiCoderListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterIntValExpression(PsiCoderParser.IntValExpressionContext ctx) { }
+	@Override public void enterPrimitiveValExpression(PsiCoderParser.PrimitiveValExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitIntValExpression(PsiCoderParser.IntValExpressionContext ctx) { }
+	@Override public void exitPrimitiveValExpression(PsiCoderParser.PrimitiveValExpressionContext ctx) { }
 
 	/**
 	 * {@inheritDoc}

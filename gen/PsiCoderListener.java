@@ -17,6 +17,16 @@ public interface PsiCoderListener extends ParseTreeListener {
 	 */
 	void exitProgram(PsiCoderParser.ProgramContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link PsiCoderParser#globalDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void enterGlobalDeclaration(PsiCoderParser.GlobalDeclarationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PsiCoderParser#globalDeclaration}.
+	 * @param ctx the parse tree
+	 */
+	void exitGlobalDeclaration(PsiCoderParser.GlobalDeclarationContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link PsiCoderParser#structDeclaration}.
 	 * @param ctx the parse tree
 	 */
@@ -27,6 +37,16 @@ public interface PsiCoderListener extends ParseTreeListener {
 	 */
 	void exitStructDeclaration(PsiCoderParser.StructDeclarationContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link PsiCoderParser#structMember}.
+	 * @param ctx the parse tree
+	 */
+	void enterStructMember(PsiCoderParser.StructMemberContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PsiCoderParser#structMember}.
+	 * @param ctx the parse tree
+	 */
+	void exitStructMember(PsiCoderParser.StructMemberContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link PsiCoderParser#functionDeclaration}.
 	 * @param ctx the parse tree
 	 */
@@ -36,16 +56,6 @@ public interface PsiCoderListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitFunctionDeclaration(PsiCoderParser.FunctionDeclarationContext ctx);
-	/**
-	 * Enter a parse tree produced by {@link PsiCoderParser#dataType}.
-	 * @param ctx the parse tree
-	 */
-	void enterDataType(PsiCoderParser.DataTypeContext ctx);
-	/**
-	 * Exit a parse tree produced by {@link PsiCoderParser#dataType}.
-	 * @param ctx the parse tree
-	 */
-	void exitDataType(PsiCoderParser.DataTypeContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link PsiCoderParser#returnExpression}.
 	 * @param ctx the parse tree
@@ -77,6 +87,16 @@ public interface PsiCoderListener extends ParseTreeListener {
 	 */
 	void exitVariableAssignment(PsiCoderParser.VariableAssignmentContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link PsiCoderParser#structInstantiation}.
+	 * @param ctx the parse tree
+	 */
+	void enterStructInstantiation(PsiCoderParser.StructInstantiationContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PsiCoderParser#structInstantiation}.
+	 * @param ctx the parse tree
+	 */
+	void exitStructInstantiation(PsiCoderParser.StructInstantiationContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link PsiCoderParser#instructions}.
 	 * @param ctx the parse tree
 	 */
@@ -87,149 +107,15 @@ public interface PsiCoderListener extends ParseTreeListener {
 	 */
 	void exitInstructions(PsiCoderParser.InstructionsContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code instructionVarDec}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
+	 * Enter a parse tree produced by {@link PsiCoderParser#instruction}.
 	 * @param ctx the parse tree
 	 */
-	void enterInstructionVarDec(PsiCoderParser.InstructionVarDecContext ctx);
+	void enterInstruction(PsiCoderParser.InstructionContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code instructionVarDec}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
+	 * Exit a parse tree produced by {@link PsiCoderParser#instruction}.
 	 * @param ctx the parse tree
 	 */
-	void exitInstructionVarDec(PsiCoderParser.InstructionVarDecContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code instructionStructDeclaration}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void enterInstructionStructDeclaration(PsiCoderParser.InstructionStructDeclarationContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code instructionStructDeclaration}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void exitInstructionStructDeclaration(PsiCoderParser.InstructionStructDeclarationContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code instructionFunctionCall}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void enterInstructionFunctionCall(PsiCoderParser.InstructionFunctionCallContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code instructionFunctionCall}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void exitInstructionFunctionCall(PsiCoderParser.InstructionFunctionCallContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code instructionAsig}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void enterInstructionAsig(PsiCoderParser.InstructionAsigContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code instructionAsig}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void exitInstructionAsig(PsiCoderParser.InstructionAsigContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code instructionWhileLoop}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void enterInstructionWhileLoop(PsiCoderParser.InstructionWhileLoopContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code instructionWhileLoop}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void exitInstructionWhileLoop(PsiCoderParser.InstructionWhileLoopContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code instructionDoWhile}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void enterInstructionDoWhile(PsiCoderParser.InstructionDoWhileContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code instructionDoWhile}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void exitInstructionDoWhile(PsiCoderParser.InstructionDoWhileContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code instructionForLoop}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void enterInstructionForLoop(PsiCoderParser.InstructionForLoopContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code instructionForLoop}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void exitInstructionForLoop(PsiCoderParser.InstructionForLoopContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code instructionMultSelect}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void enterInstructionMultSelect(PsiCoderParser.InstructionMultSelectContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code instructionMultSelect}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void exitInstructionMultSelect(PsiCoderParser.InstructionMultSelectContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code instructionConditional}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void enterInstructionConditional(PsiCoderParser.InstructionConditionalContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code instructionConditional}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void exitInstructionConditional(PsiCoderParser.InstructionConditionalContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code instructionRead}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void enterInstructionRead(PsiCoderParser.InstructionReadContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code instructionRead}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void exitInstructionRead(PsiCoderParser.InstructionReadContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code instructionPrint}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void enterInstructionPrint(PsiCoderParser.InstructionPrintContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code instructionPrint}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void exitInstructionPrint(PsiCoderParser.InstructionPrintContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code instructionReturn}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void enterInstructionReturn(PsiCoderParser.InstructionReturnContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code instructionReturn}
-	 * labeled alternative in {@link PsiCoderParser#instruction}.
-	 * @param ctx the parse tree
-	 */
-	void exitInstructionReturn(PsiCoderParser.InstructionReturnContext ctx);
+	void exitInstruction(PsiCoderParser.InstructionContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link PsiCoderParser#read}.
 	 * @param ctx the parse tree
@@ -321,51 +207,15 @@ public interface PsiCoderListener extends ParseTreeListener {
 	 */
 	void exitFunctionCall(PsiCoderParser.FunctionCallContext ctx);
 	/**
-	 * Enter a parse tree produced by {@link PsiCoderParser#value}.
+	 * Enter a parse tree produced by {@link PsiCoderParser#primitiveValue}.
 	 * @param ctx the parse tree
 	 */
-	void enterValue(PsiCoderParser.ValueContext ctx);
+	void enterPrimitiveValue(PsiCoderParser.PrimitiveValueContext ctx);
 	/**
-	 * Exit a parse tree produced by {@link PsiCoderParser#value}.
+	 * Exit a parse tree produced by {@link PsiCoderParser#primitiveValue}.
 	 * @param ctx the parse tree
 	 */
-	void exitValue(PsiCoderParser.ValueContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code minusExpression}
-	 * labeled alternative in {@link PsiCoderParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterMinusExpression(PsiCoderParser.MinusExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code minusExpression}
-	 * labeled alternative in {@link PsiCoderParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitMinusExpression(PsiCoderParser.MinusExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code booleanValExpression}
-	 * labeled alternative in {@link PsiCoderParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterBooleanValExpression(PsiCoderParser.BooleanValExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code booleanValExpression}
-	 * labeled alternative in {@link PsiCoderParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitBooleanValExpression(PsiCoderParser.BooleanValExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code adExpression}
-	 * labeled alternative in {@link PsiCoderParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterAdExpression(PsiCoderParser.AdExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code adExpression}
-	 * labeled alternative in {@link PsiCoderParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitAdExpression(PsiCoderParser.AdExpressionContext ctx);
+	void exitPrimitiveValue(PsiCoderParser.PrimitiveValueContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code orExpression}
 	 * labeled alternative in {@link PsiCoderParser#expression}.
@@ -403,6 +253,18 @@ public interface PsiCoderListener extends ParseTreeListener {
 	 */
 	void exitAndExpression(PsiCoderParser.AndExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code minusExpression}
+	 * labeled alternative in {@link PsiCoderParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterMinusExpression(PsiCoderParser.MinusExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code minusExpression}
+	 * labeled alternative in {@link PsiCoderParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitMinusExpression(PsiCoderParser.MinusExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code idExpression}
 	 * labeled alternative in {@link PsiCoderParser#expression}.
 	 * @param ctx the parse tree
@@ -427,30 +289,6 @@ public interface PsiCoderListener extends ParseTreeListener {
 	 */
 	void exitCompExpression(PsiCoderParser.CompExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code charValExpression}
-	 * labeled alternative in {@link PsiCoderParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterCharValExpression(PsiCoderParser.CharValExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code charValExpression}
-	 * labeled alternative in {@link PsiCoderParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitCharValExpression(PsiCoderParser.CharValExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code stringValExpression}
-	 * labeled alternative in {@link PsiCoderParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterStringValExpression(PsiCoderParser.StringValExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code stringValExpression}
-	 * labeled alternative in {@link PsiCoderParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitStringValExpression(PsiCoderParser.StringValExpressionContext ctx);
-	/**
 	 * Enter a parse tree produced by the {@code nestedExpression}
 	 * labeled alternative in {@link PsiCoderParser#expression}.
 	 * @param ctx the parse tree
@@ -462,18 +300,6 @@ public interface PsiCoderListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitNestedExpression(PsiCoderParser.NestedExpressionContext ctx);
-	/**
-	 * Enter a parse tree produced by the {@code realValExpression}
-	 * labeled alternative in {@link PsiCoderParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void enterRealValExpression(PsiCoderParser.RealValExpressionContext ctx);
-	/**
-	 * Exit a parse tree produced by the {@code realValExpression}
-	 * labeled alternative in {@link PsiCoderParser#expression}.
-	 * @param ctx the parse tree
-	 */
-	void exitRealValExpression(PsiCoderParser.RealValExpressionContext ctx);
 	/**
 	 * Enter a parse tree produced by the {@code functionCallExpression}
 	 * labeled alternative in {@link PsiCoderParser#expression}.
@@ -499,6 +325,18 @@ public interface PsiCoderListener extends ParseTreeListener {
 	 */
 	void exitMultExpression(PsiCoderParser.MultExpressionContext ctx);
 	/**
+	 * Enter a parse tree produced by the {@code adExpression}
+	 * labeled alternative in {@link PsiCoderParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void enterAdExpression(PsiCoderParser.AdExpressionContext ctx);
+	/**
+	 * Exit a parse tree produced by the {@code adExpression}
+	 * labeled alternative in {@link PsiCoderParser#expression}.
+	 * @param ctx the parse tree
+	 */
+	void exitAdExpression(PsiCoderParser.AdExpressionContext ctx);
+	/**
 	 * Enter a parse tree produced by the {@code negExpression}
 	 * labeled alternative in {@link PsiCoderParser#expression}.
 	 * @param ctx the parse tree
@@ -511,15 +349,15 @@ public interface PsiCoderListener extends ParseTreeListener {
 	 */
 	void exitNegExpression(PsiCoderParser.NegExpressionContext ctx);
 	/**
-	 * Enter a parse tree produced by the {@code intValExpression}
+	 * Enter a parse tree produced by the {@code primitiveValExpression}
 	 * labeled alternative in {@link PsiCoderParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void enterIntValExpression(PsiCoderParser.IntValExpressionContext ctx);
+	void enterPrimitiveValExpression(PsiCoderParser.PrimitiveValExpressionContext ctx);
 	/**
-	 * Exit a parse tree produced by the {@code intValExpression}
+	 * Exit a parse tree produced by the {@code primitiveValExpression}
 	 * labeled alternative in {@link PsiCoderParser#expression}.
 	 * @param ctx the parse tree
 	 */
-	void exitIntValExpression(PsiCoderParser.IntValExpressionContext ctx);
+	void exitPrimitiveValExpression(PsiCoderParser.PrimitiveValExpressionContext ctx);
 }
