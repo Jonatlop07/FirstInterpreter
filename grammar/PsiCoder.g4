@@ -11,14 +11,11 @@ structDeclaration: 'estructura' ID structMember+ 'fin_estructura';
 structMember: DATA_TYPE ID (',' ID)* ';'
             | ID ID (',' ID)* ';' ;
 
-functionDeclaration: 'funcion' (DATA_TYPE | ID) ID LEFT_PAR ((DATA_TYPE | ID) ID (COMMA (DATA_TYPE | ID) ID)*)? RIGHT_PAR
-                      'hacer' instruction* returnExpression 'fin_funcion';
-
-//dataType: DATA_TYPE | ID;
+functionDeclaration: 'funcion' DATA_TYPE ID '(' (DATA_TYPE ID (',' DATA_TYPE ID)*)? ')'
+                      'hacer' instructions returnExpression 'fin_funcion';
 
 returnExpression: 'retornar' expression ';';
 
-//variableDeclaration: DATA_TYPE ID ('=' expression)? (',' ID ('=' expression)?)* ';';
 variableDeclaration: ID ('=' expression)?;
 
 variableAssignment: ID (DOT ID)* '=' expression;
@@ -27,7 +24,7 @@ structInstantiation: ID ID (',' ID)* ';';
 
 instructions: instruction instructions | ;
 
-instruction:  DATA_TYPE variableDeclaration ',' variableDeclaration* ';'
+instruction:  DATA_TYPE variableDeclaration (',' variableDeclaration)* ';'
             | structInstantiation
             | functionCall ';'
             | variableAssignment (',' variableAssignment)* ';'
@@ -50,9 +47,9 @@ whileLoop: 'mientras' '(' expression ')' 'hacer' instructions 'fin_mientras';
 
 doWhile: 'hacer' instructions 'mientras' '(' expression ')' ';';
 
-forLoop: 'para' '(' (INTEGER ID '=' expression | ID ('=' expression)?) ';' expression ';' (ID | INT) ')' 
+forLoop: 'para' '(' (DATA_TYPE? ID ('=' expression)?) ';' expression ';' (ID | INT) ')' 
          'hacer' instructions 'fin_para';
-
+         
 multSelection: 'seleccionar' '(' expression ')' 'entre'
                 (
                   (CASE primitiveValue ':' instructions ROMPER?)+ defaultCase?
@@ -79,5 +76,5 @@ expression: MINUS expression #minusExpression
           | expression OR expression #orExpression
           | '(' expression ')' #nestedExpression
           | primitiveValue #primitiveValExpression
-          | ID (DOT ID)* #idExpression
+          | ID ('.' ID)* #idExpression
           | functionCall #functionCallExpression;

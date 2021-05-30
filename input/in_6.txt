@@ -1,4 +1,5 @@
-funcion_principal   
+funcion_principal
+    entero a = 10; 
     mientras ( a > 0 ) hacer
        a = a - 1;  
        imprimir(a);                                      

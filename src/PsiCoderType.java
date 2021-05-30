@@ -11,7 +11,7 @@ public class PsiCoderType implements Comparable<PsiCoderType> {
     }
     
     public Integer toInteger() {
-        return ( Integer ) value;
+        return ( ( Number ) value ).intValue();
     }
     
     public boolean isInteger() {
@@ -19,11 +19,15 @@ public class PsiCoderType implements Comparable<PsiCoderType> {
     }
     
     public Double toReal() {
-        return ( Double ) value;
+        return ( ( Number ) value ).doubleValue();
     }
     
     public boolean isReal() {
         return value instanceof Double;
+    }
+    
+    public boolean isNumber() {
+        return value instanceof Number;
     }
     
     public Boolean toBoolean() {
@@ -52,9 +56,12 @@ public class PsiCoderType implements Comparable<PsiCoderType> {
     
     @Override
     public int compareTo( PsiCoderType other ) {
-        if ( ( this.isInteger() || this.isReal() ) && ( other.isInteger() || other.isReal() ) ) {
-            if ( this.equals( other ) ) return 0;
-            else return this.toReal().compareTo( other.toReal() );
+        if ( this.isNumber() && other.isNumber() ) {
+            if ( this.equals( other ) ) {
+                return 0;
+            } else {
+                return this.toReal().compareTo( other.toReal() );
+            }
         } else if ( this.isString() && other.isString() )
             return this.toStringType().compareTo( other.toStringType() );
         else if ( this.isCharacter() && other.isCharacter() )
@@ -67,11 +74,18 @@ public class PsiCoderType implements Comparable<PsiCoderType> {
     @Override
     public boolean equals( Object other ) {
         if ( this == other ) return true;
-        
         PsiCoderType _other = ( PsiCoderType ) other;
-        
-        if ( ( this.isInteger() || this.isReal() ) && ( _other.isInteger() || _other.isReal() ) )
+        if ( this.isNumber() && _other.isNumber() ) {
             return Math.abs( this.toReal() - _other.toReal() ) < 0.0000001;
-        else return this.getValue().equals( _other.getValue() );
+        }
+        return this.getValue().equals( _other.getValue() );
+    }
+    
+    public boolean isCompatible( PsiCoderType other ) {
+        return ( ( this.isNumber() && other.isNumber() )
+            || ( this.isBoolean() && other.isBoolean() )
+            || ( this.isCharacter() && other.isCharacter() )
+            || ( this.isString() && other.isString() )
+        );
     }
 }

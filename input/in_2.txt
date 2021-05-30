@@ -1,8 +1,8 @@
 funcion_principal
-  entero a;
+  entero a, b = 3, c, x=1;
   a = 3 * (5) / b;
-  a = a + 1            ;
-  a = x;c = 1;
-  b = “lenguajes de programacion”;
-  imprimir( b );
+  a = a + 1.2            ;
+  c=x,c = 1;
+  b = "lenguajes de programacion";
+  imprimir( a, b );
 fin_principal

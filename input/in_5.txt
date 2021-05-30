@@ -1,8 +1,10 @@
 funcion_principal
+    entero p = 2, a = 5, j;
     para ( entero i = 0 ; i < a ; 1 ) hacer
-        imprimir(i);
+        imprimir( "Primer loop: ", i );
     fin_para
-    para ( j = 0; i < a || j  < 100  ; p ) hacer
+    entero i = 1;
+    para ( j = 0; i < a && j  < 50  ; p ) hacer
         imprimir(j);
     fin_para
 fin_principal
