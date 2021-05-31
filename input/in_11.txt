@@ -3,10 +3,11 @@
 
 funcion_principal
     entero num1,num2,may;
-    imprimir( "digite un numero entero positivo " );
-    leer( num1 );
-    imprimir( "digite un numero entero positivo " );
-    leer( num2 );
+    //imprimir( "digite un numero entero positivo " );
+    //leer( num1 );
+    //imprimir( "digite un numero entero positivo " );
+    //leer( num2 );
+    num1=2, num2=4;
     may = mayor(num1,num2);
     imprimir ("El numero mayor es ", may);
 fin_principal

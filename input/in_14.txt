@@ -1,0 +1,15 @@
+funcion_principal
+    imprimir("Caso 2: Asignacion de variables");
+    entero a = 3232;
+    real b = 3424.0;
+    booleano c = verdadero;
+    cadena d = "Esta es una cadena";
+    caracter e = 'c';
+    imprimir("Entero: a -> ", a);
+    imprimir("Real: b -> ", b);
+    imprimir("Booleano: c -> ", c);
+    imprimir("Cadena: d -> ", d);
+    imprimir("Caracter: e -> ", e);
+    imprimir("Asignacion de variable no declarada");
+    f = 343;
+fin_principal

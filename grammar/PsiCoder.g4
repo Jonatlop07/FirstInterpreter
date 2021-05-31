@@ -18,14 +18,14 @@ returnExpression: 'retornar' expression ';';
 
 variableDeclaration: ID ('=' expression)?;
 
-variableAssignment: ID (DOT ID)* '=' expression;
+variableAssignment: ID ('.' ID)* '=' expression;
 
 structInstantiation: ID ID (',' ID)* ';';
 
 instructions: instruction instructions | ;
 
-instruction:  DATA_TYPE variableDeclaration (',' variableDeclaration)* ';'
-            | structInstantiation
+instruction:  structInstantiation
+            | DATA_TYPE variableDeclaration (',' variableDeclaration)* ';'
             | functionCall ';'
             | variableAssignment (',' variableAssignment)* ';'
             | whileLoop
@@ -52,11 +52,11 @@ forLoop: 'para' '(' (DATA_TYPE? ID ('=' expression)?) ';' expression ';' (ID | I
          
 multSelection: 'seleccionar' '(' expression ')' 'entre'
                 (
-                  (CASE primitiveValue ':' instructions ROMPER?)+ defaultCase?
+                  (CASE primitiveValue ':' instructions 'romper' ';')+ defaultCase?
                   | defaultCase
                 ) 'fin_seleccionar';
 
-defaultCase: 'default' ':' instructions ';';
+defaultCase: 'defecto' ':' instructions;
 
 functionCall: ID '(' (expression (',' expression)*)? ')';
 

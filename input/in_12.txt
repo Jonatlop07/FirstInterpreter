@@ -1,4 +1,5 @@
 funcion_principal
+    entero num1 = 5, num2 = 2, b = 5, res;
     si ( num1 > num2 ) entonces
        res = num1;
        si( res == b ) entonces

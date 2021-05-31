@@ -1,13 +1,16 @@
-estructura estruct
-    entero i;
-    real j;
-fin_estructura
-
 funcion_principal
-    estruct es;
-    es.i = 1;
-    imprimir(es.i + 2);
-    entero a = 1;
-    //leer(es.j); //No se puede leer desde la consola 
-    imprimir(a);
+    imprimir("Caso 1: Declaracion de variables");
+    entero a;
+    real b;
+    booleano c;
+    cadena d;
+    caracter e;
+    imprimir("Valor predeterminado de las variables declaradas sin asignacion:");
+    imprimir("Entero: a -> ", a);
+    imprimir("Real: b -> ", b);
+    imprimir("Booleano: c -> ", c);
+    imprimir("Cadena: d -> ", d);
+    imprimir("Caracter: e -> ", e, " (caracter vacio)");
+    imprimir("Impresion de variable no declarada: f -> ");
+    imprimir(f);
 fin_principal

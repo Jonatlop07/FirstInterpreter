@@ -1,0 +1,33 @@
+funcion_principal
+    imprimir("Caso 3: Expresiones");
+    imprimir("Sumas:");
+    imprimir("1 + 1: ", 1 + 1);
+    imprimir("-1 + 1.2: ", 1 + 1.2);
+    imprimir("1.2 + 1.2: ", 1.2 + 1.2);
+    imprimir("Restas:");
+    imprimir("1 - 1: ", 1 - 1);
+    imprimir("1.2 - 1: ", 1.2 - 1);
+    imprimir("1.2 - 1.4: ", 1.2 - 1.4);
+    imprimir("Multiplicacion, division y modulo:");
+    imprimir("2 * 2.2: ", 2 * 2.2);
+    imprimir("4 % 5: ", 4 % 2);
+    imprimir("2.4 / 1.2: ", 2.4 / 1.2);
+    imprimir("Comparaciones e igualdades:");
+    imprimir("2 < 3: ", 2 < 3);
+    imprimir("2.01 >= 2.01: ", 2.01 > 2);
+    imprimir("2.2 == 2.2: ", 2.2 >= 2.2);
+    imprimir("2.2 != 2.21: ", 2.2 != 2.21 );
+    imprimir("Expresiones logicas:");
+    imprimir("!verdadero: ", !verdadero);
+    imprimir("falso || falso: ", falso || falso);
+    imprimir("verdadero || falso: ", verdadero || falso);
+    imprimir("falso && falso: ", falso && falso);
+    imprimir("verdadero && falso: ", verdadero && falso);
+    imprimir("verdadero && verdadero: ", verdadero && verdadero);
+    imprimir("Operadores combinados:");
+    imprimir("2.3 > 5 + 4: ", 2.3 > 5 + 4);
+    imprimir("2 * 4 <= 4 + 4: ", 2 * 4 <= 4 + 4);
+    imprimir("(Esperado: 5), (2 * 3 + 15 / 3) % 9 + 3: ", (2 * 3 + 15 / 3) % 9 + 3);
+    imprimir("Produce error: (5 / 3) + (4 || verdadero):");
+    imprimir((5 / 3) + (4 || verdadero));
+fin_principal

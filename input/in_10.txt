@@ -28,7 +28,6 @@ funcion_principal
                     romper;
            caso 3 : romper;
            defecto :imprimir("Digite una opcion entre 1 y 3 ");
-                    romper;
        fin_seleccionar
     mientras ( opcion != 3) ;
 fin_principal

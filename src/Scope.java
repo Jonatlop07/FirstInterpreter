@@ -3,7 +3,7 @@ import java.util.*;
 public class Scope {
     
     private Scope parentScope;
-    private Map<String, Optional<PsiCoderType>> variables;
+    private Map<String, PsiCoderType> variables;
     private Map<String, Struct> structs;
     private boolean isAFunction;
     
@@ -20,11 +20,7 @@ public class Scope {
         return parentScope;
     }
     
-    public void addArgument( String identifier, Optional<PsiCoderType> value ) {
-        variables.put( identifier, value );
-    }
-    
-    public void add( String identifier, Optional<PsiCoderType> value ) {
+    public void add( String identifier, PsiCoderType value ) {
         if ( searchId( identifier, !isAFunction ) != null )
             update( identifier, value );
         else variables.put( identifier, value );
@@ -39,25 +35,12 @@ public class Scope {
         );
     }
     
-    /* public Optional<PsiCoderType> searchId( String identifier ) {
-        return searchId( identifier, true );
-    }*/
-    
-    /*public Optional<PsiCoderType> searchId( String identifier, boolean searchInParentScope ) {
-        Optional variableValue = variables.get( identifier );
-        if ( variableValue != null )
-            return variableValue;
-        if ( parentScope != null && searchInParentScope )
-            return parentScope.searchId( identifier, !parentScope.isAFunction );
-        return null;
-    }*/
-    
     public void assignStructMember( List<String> literals, PsiCoderType value ) {
         String identifier = literals.get( 0 );
         Struct struct = structs.get( identifier );
         if ( struct == null ) {
             if ( parentScope == null )
-                throw new RuntimeException( "La variable " + identifier + " no se encuentra declarada" );
+                SemanticError.throwError( "La variable " + identifier + " no se encuentra declarada" );
             parentScope.assignStructMember( literals, value );
         } else {
             literals.remove( 0 );
@@ -65,29 +48,29 @@ public class Scope {
         }
     }
     
-    public Optional<PsiCoderType> getStructMemberValue( List<String> literals ) {
-        Struct struct = ( Struct ) searchId( literals.get( 0 ) ).get();
+    public PsiCoderType getStructMemberValue( List<String> literals ) {
+        Struct struct = ( Struct ) searchId( literals.get( 0 ) );
         literals.remove( 0 );
         return struct.getMemberValue( literals );
     }
     
-    public Optional searchId( String identifier ) {
+    public Object searchId( String identifier ) {
         return searchId( identifier, true );
     }
     
-    public Optional searchId( String identifier, boolean searchInParentScope ) {
-        Optional<PsiCoderType> variableValue = variables.get( identifier );
+    public Object searchId( String identifier, boolean searchInParentScope ) {
+        PsiCoderType variableValue = variables.get( identifier );
         if ( variableValue != null )
             return variableValue;
         Struct struct = structs.get( identifier );
         if ( struct != null )
-            return Optional.of( struct );
+            return struct;
         if ( parentScope != null && searchInParentScope )
             return parentScope.searchId( identifier, !parentScope.isAFunction );
         return null;
     }
     
-    private void update( String identifier, Optional<PsiCoderType> value ) {
+    private void update( String identifier, PsiCoderType value ) {
         if ( variables.containsKey( identifier ) )
             variables.put( identifier, value );
         else if ( parentScope != null ) {
@@ -96,11 +79,11 @@ public class Scope {
     }
     
     private class Struct {
-        private Map<String, Optional<PsiCoderType>> primitiveTypeMembers;
+        private Map<String, PsiCoderType> primitiveTypeMembers;
         private Map<String, Struct> structTypeMembers;
         
         public Struct(
-            Map<String, Optional<PsiCoderType>> primitiveTypeMembers,
+            Map<String, PsiCoderType> primitiveTypeMembers,
             Map<String, String> structTypeMembers
         ) {
             this.primitiveTypeMembers = primitiveTypeMembers;
@@ -118,38 +101,39 @@ public class Scope {
             }
         }
         
-        public Optional<PsiCoderType> getMemberValue( List<String> literals ) {
+        public PsiCoderType getMemberValue( List<String> literals ) {
             if ( literals.isEmpty() )
-                throw new RuntimeException( "Error semantico: No se puede emplear una variable de tipo estructura en una expresion." );
+                SemanticError.throwError( "No se puede emplear una variable de tipo estructura en una expresion." );
             if ( this.primitiveTypeMembers.containsKey( literals.get( 0 ) ) ) {
                 return this.primitiveTypeMembers.get( literals.get( 0 ) );
             } else if ( this.structTypeMembers.containsKey( literals.get( 0 ) ) ) {
                 String structMemberLiteral = literals.remove( 0 );
                 return this.structTypeMembers.get( structMemberLiteral ).getMemberValue( literals );
-            } else throw new RuntimeException( "El literal " + literals.get( 0 ) + " no existe." );
+            } else SemanticError.throwError( "El literal " + literals.get( 0 ) + " no existe." );
+            return null;
         }
         
         public Struct assignMemberValue( List<String> literals, PsiCoderType value ) {
             if ( literals.isEmpty() )
-                throw new RuntimeException( "Error semantico: No esta permitido asignar una variable de tipo estructura a otra" );
+                SemanticError.throwError( "No esta permitido asignar una variable de tipo estructura a otra" );
             
             String identifier = literals.get( 0 );
-            PsiCoderType primitiveValue = this.primitiveTypeMembers.get( identifier ).get();
+            PsiCoderType primitiveValue = this.primitiveTypeMembers.get( identifier );
             Struct structMember = this.structTypeMembers.get( identifier );
             
             if ( primitiveValue != null ) {
                 if ( primitiveValue.isCompatible( value ) ) {
                     if ( primitiveValue.isInteger() && value.isReal() )
-                        this.primitiveTypeMembers.put( identifier, Optional.of( new PsiCoderType( value.toInteger() ) ) );
+                        this.primitiveTypeMembers.put( identifier, new PsiCoderType( value.toInteger() ) );
                     else
-                        this.primitiveTypeMembers.put( identifier, Optional.of( value ) );
+                        this.primitiveTypeMembers.put( identifier, value );
                 } else {
-                    throw new RuntimeException( "Error semantico: El valor asignado al miembro " + identifier + " no es del tipo esperado" );
+                    SemanticError.throwError( "El valor asignado al miembro " + identifier + " no es del tipo esperado" );
                 }
             } else if ( structMember != null ) {
                 literals.remove( 0 );
                 this.structTypeMembers.put( identifier, structMember.assignMemberValue( literals, value ) );
-            } else throw new RuntimeException( "Error semantico: El literal " + literals.get( 0 ) + " no existe." );
+            } else SemanticError.throwError( "El literal " + literals.get( 0 ) + " no existe." );
             return this;
         }
     }

@@ -3,5 +3,5 @@ funcion_principal
     hacer
         a = a/2;
         imprimir(a);
-    mientras( a > 1 ); // debe terminar en punto y coma
+    mientras( a > 1 );
 fin_principal

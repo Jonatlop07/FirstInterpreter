@@ -1,6 +1,5 @@
 funcion entero sum(entero a, entero b) hacer
     retornar a + b;
-    // fin
 fin_funcion
 
 funcion_principal
