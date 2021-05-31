@@ -1,0 +1,51 @@
+funcion entero sum(entero a, entero b) hacer
+    retornar a + b;
+fin_funcion
+
+funcion entero res(entero a, entero b) hacer
+    retornar a - b;
+fin_funcion
+
+funcion entero dol(entero a, entero b) hacer
+    retornar a * b;
+fin_funcion
+
+funcion_principal
+    real z,x,y;
+    
+    entero p = 2, a = 5, j;
+    j = sum(p,a);
+    a = res(p,j);
+    j = dol(p,a);
+    para ( entero i = 0 ; i < a ; 1 ) hacer
+        imprimir( "Primer loop: ", i );
+    fin_para
+    entero i = 1;
+    para ( j = 0; i < a && j  < 50  ; p ) hacer
+        imprimir(j);
+    fin_para
+    para ( entero i = 0 ; i < a ; 1 ) hacer
+        imprimir( "Primer loop: ", i );
+    fin_para
+
+        Estudiante estudiante;
+    entero opcion;
+
+    mientras ( a > 0 ) hacer
+       a = a - 1;  
+       imprimir(a);                                      
+    fin_mientras
+
+    hacer
+        opcion = menu();
+        seleccionar ( opcion ) entre
+           caso 1 : estudiante = capturar(estudiante);
+                    romper;
+           caso 2 : mostrar(estudiante);
+                    romper;
+           caso 3 : romper;
+           defecto :imprimir("Digite una opcion entre 1 y 3 ");
+       fin_seleccionar
+    mientras ( opcion != 3) ;
+
+fin_principal
