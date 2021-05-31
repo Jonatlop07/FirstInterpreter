@@ -9,7 +9,7 @@ import org.antlr.v4.runtime.tree.*;
 public class PsiCoderInterpreter {
     public static void main( String[] args ) throws IOException {
         int i = 1;
-        for (i = 16; i < 17; ++i) {
+        for (i = 19; i < 20; ++i) {
             System.setIn( new FileInputStream( new File( "input/in_"+i+".txt" ) ) );
             ANTLRInputStream input = new ANTLRInputStream( System.in );
             PsiCoderLexer lexer = new PsiCoderLexer( input );

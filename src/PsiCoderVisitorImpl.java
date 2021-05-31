@@ -17,10 +17,8 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
     public PsiCoderType visitProgram( PsiCoderParser.ProgramContext ctx ) {
         if ( ctx.globalDeclaration().size() > 0 ) {
             visitGlobalDeclaration( ctx.globalDeclaration( 0 ) );
-            
-            if ( ctx.globalDeclaration( 1 ) != null ) {
+            if ( ctx.globalDeclaration( 1 ) != null )
                 visitGlobalDeclaration( ctx.globalDeclaration( 1 ) );
-            }
         }
         return visitInstructions( ctx.instructions() );
     }
@@ -50,18 +48,17 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
     
     @Override
     public PsiCoderType visitStructDeclaration( PsiCoderParser.StructDeclarationContext ctx ) {
-        String structId = ctx.ID().getText();
-        
-        if ( !Scope.structsDeclared.containsKey( structId ) ) {
-            Scope.structsDeclared.put( structId, new StructDeclaration() );
+        String structName = ctx.ID().getText();
+        if ( !Scope.structsDeclared.containsKey( structName ) ) {
+            Scope.structsDeclared.put( structName, new StructDeclaration() );
             ctx.structMember()
-                .forEach( structMemberContext -> visitStructMember( structMemberContext, structId ) );
-        } else SemanticError
-            .throwError( "Una estructura con el mismo identificador ha sido declarada." );
+                .forEach( structMemberContext -> visitStructMember( structMemberContext, structName ) );
+        } else
+            SemanticError.throwError( "Una estructura con el mismo identificador ha sido declarada." );
         return null;
     }
     
-    public void visitStructMember( PsiCoderParser.StructMemberContext ctx, String structId ) {
+    public void visitStructMember( PsiCoderParser.StructMemberContext ctx, String structName ) {
         if ( ctx.DATA_TYPE() != null ) {
             String dataType = ctx.DATA_TYPE().getText();
             PsiCoderType defaultValue = getDefaultValueByDataType( dataType );
@@ -69,62 +66,73 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
                 .stream()
                 .map( ParseTree::getText )
                 .forEach( memberId -> {
-                    if ( !Scope.structsDeclared.get( structId ).getAtomic().containsKey( memberId )
-                        && !Scope.structsDeclared.get( structId ).getCompound().containsKey( memberId ) ) {
-                        Scope.structsDeclared.get( structId ).getAtomic().put( memberId, defaultValue );
+                    if ( !Scope.structsDeclared.get( structName ).getAtomic().containsKey( memberId )
+                        && !Scope.structsDeclared.get( structName ).getCompound().containsKey( memberId ) ) {
+                        Scope.structsDeclared.get( structName ).getAtomic().put( memberId, defaultValue );
                     } else
-                        SemanticError.throwError( "Miembro de la estructura " + structId + ", "
-                            + memberId + ", ya definido" );
+                        SemanticError.throwError( "Miembro de la estructura '" + structName + "', '" + memberId + "', ya definido" );
                 } );
         } else {
-            String structMemberId = ctx.ID().remove( 0 ).getText();
-            if ( !Scope.structsDeclared.containsKey( structMemberId ) )
-                SemanticError.throwError( "La estructura " + structMemberId + " no se encuentra declarada" );
-            
-            ctx.ID()
-                .stream()
-                .map( ParseTree::getText )
-                .forEach( memberId -> {
-                    if ( !Scope.structsDeclared.get( structId ).getAtomic().containsKey( memberId )
-                        && !Scope.structsDeclared.get( structId ).getCompound().containsKey( memberId ) ) {
-                        Scope.structsDeclared.get( structId ).getCompound().put( memberId, structMemberId );
-                    } else
-                        SemanticError.throwError( "Miembro de la estructura " + structId + ", "
-                            + memberId + " ya definido" );
-                } );
+            String structMemberName = ctx.ID( 0 ).getText();
+            if ( !Scope.structsDeclared.containsKey( structMemberName ) )
+                SemanticError.throwError( "La estructura '" + structMemberName + "' no se encuentra declarada" );
+            for ( int i = 1; i < ctx.ID().size(); ++i ) {
+                String memberId = ctx.ID( i ).getText();
+                if ( !Scope.structsDeclared.get( structName ).getAtomic().containsKey( memberId )
+                    && !Scope.structsDeclared.get( structName ).getCompound().containsKey( memberId ) ) {
+                    Scope.structsDeclared.get( structName ).getCompound().put( memberId, structMemberName );
+                } else
+                    SemanticError.throwError( "Miembro de la estructura '" + structName + "', '" + memberId + "' ya definido" );
+            }
         }
     }
     
     @Override
     public PsiCoderType visitFunctionDeclaration( PsiCoderParser.FunctionDeclarationContext ctx ) {
-        String functionDataType = ctx.DATA_TYPE( 0 ).getText();
-        String functionId = ctx.ID( 0 ).getText();
-        
+        PsiCoderType functionDataType = visitDataType( ctx.dataType( 0 ) );
+        String functionName = ctx.ID( 0 ).getText();
+        if ( functionDataType.isStruct() ) {
+            if ( !Scope.structsDeclared.containsKey( functionDataType.toStruct().getType() ) )
+                SemanticError.throwError( "En la funcion '" + functionName +
+                    "', la estructura '" + functionDataType.toStruct().getType() + "' no se encuentra declarada" );
+        }
         List<FunctionParameter> parameters = new ArrayList<>();
-        
-        for ( int i = 1; i < ctx.DATA_TYPE().size(); ++i ) {
-            String argumentDataType = ctx.DATA_TYPE( i ).getText();
+        for ( int i = 1; i < ctx.dataType().size(); ++i ) {
+            PsiCoderType argumentDataType = visitDataType( ctx.dataType( i ) );
             String argumentId = ctx.ID( i ).getText();
             parameters.add(
                 new FunctionParameter(
                     argumentId,
-                    getDefaultValueByDataType( argumentDataType )
+                    argumentDataType
                 )
             );
+            Set<String> parametersSet = parameters.stream().map( FunctionParameter::getIdentifier ).collect( Collectors.toSet() );
+            if ( parameters.size() > parametersSet.size() )
+                SemanticError.throwError( "En la funcion '" + functionName + "', el parametro '" + argumentId + "' ya esta definido" );
         }
-        
         functions.put(
-            functionId + ( ctx.DATA_TYPE().size() - 1 ),
+            functionName + ( ctx.dataType().size() - 1 ),
             new Function(
                 scope,
-                getDefaultValueByDataType( functionDataType ),
+                functionDataType,
                 parameters,
                 ctx.instructions(),
                 ctx.returnExpression()
             )
         );
-        
         return null;
+    }
+    
+    public PsiCoderType visitDataType( PsiCoderParser.DataTypeContext ctx ) {
+        if ( ctx.DATA_TYPE() != null )
+            return getDefaultValueByDataType( ctx.DATA_TYPE().getText() );
+        return new PsiCoderType(
+            new Struct(
+                ctx.ID().getText(),
+                Scope.structsDeclared.get( ctx.ID().getText() ).getAtomic(),
+                Scope.structsDeclared.get( ctx.ID().getText() ).getCompound()
+            )
+        );
     }
     
     @Override
@@ -134,53 +142,71 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
     
     public void visitVariableDeclaration( PsiCoderParser.VariableDeclarationContext ctx, String dataType ) {
         String identifier = ctx.ID().getText();
-        
         if ( scope.searchId( identifier, false ) == null ) {
             if ( ctx.expression() != null ) {
                 PsiCoderType value = visit( ctx.expression() );
-                
-                if ( dataType.equals( "booleano" ) && value.isBoolean() ) {
+                if ( dataType.equals( "booleano" ) && value.isBoolean() )
                     scope.add( identifier, new PsiCoderType( value.toBoolean() ) );
-                } else if ( dataType.equals( "caracter" ) && value.isCharacter() ) {
+                else if ( dataType.equals( "caracter" ) && value.isCharacter() )
                     scope.add( identifier, new PsiCoderType( value.toCharacter() ) );
-                } else if ( dataType.equals( "entero" ) && value.isNumber() ) {
+                else if ( dataType.equals( "entero" ) && value.isNumber() )
                     scope.add( identifier, new PsiCoderType( value.toInteger() ) );
-                } else if ( dataType.equals( "real" ) && value.isNumber() ) {
+                else if ( dataType.equals( "real" ) && value.isNumber() )
                     scope.add( identifier, new PsiCoderType( value.toReal() ) );
-                } else if ( dataType.equals( "cadena" ) && value.isString() ) {
+                else if ( dataType.equals( "cadena" ) && value.isString() )
                     scope.add( identifier, new PsiCoderType( value.toStringType() ) );
-                } else SemanticError.throwError( "Se esperaba un valor de tipo " + dataType );
+                else SemanticError.throwError( "Se esperaba un valor de tipo '" + dataType + "'" );
             } else
                 scope.add( identifier, getDefaultValueByDataType( dataType ) );
         } else
-            SemanticError.throwError( "Variable " + identifier + "ya declarada " );
+            SemanticError.throwError( "Variable '" + identifier + "' ya declarada " );
     }
     
     @Override
     public PsiCoderType visitVariableAssignment( PsiCoderParser.VariableAssignmentContext ctx ) {
-        String identifier = ctx.ID( 0 ).getText();
         PsiCoderType value = visit( ctx.expression() );
-        Object searchResult = scope.searchId( identifier );
-        if ( searchResult != null )
-            variableAssignment( identifier, searchResult, value, ctx.ID() );
-        else
-            SemanticError.throwError( "Variable " + identifier + " no declarada" );
+        variableAssignment( value, ctx.ID() );
         return null;
     }
     
     @Override
     public PsiCoderType visitStructInstantiation( PsiCoderParser.StructInstantiationContext ctx ) {
-        String structName = ctx.ID( 0 ).getText();
-        if ( Scope.structsDeclared.containsKey( structName ) ) {
-            for ( int i = 1; i < ctx.ID().size(); ++i ) {
-                String structId = ctx.ID( i ).getText();
-                if ( scope.searchId( structId ) == null )
-                    scope.add( ctx.ID( i ).getText(), structName );
-                else
-                    SemanticError.throwError( "La estructura" + structId + "se encuentra declarada" );
-            }
-        } else SemanticError.throwError( "La estructura " + structName + " no se encuentra declarada" );
+        String structName = ctx.ID().getText();
+        if ( Scope.structsDeclared.containsKey( structName ) )
+            ctx.structInstantiationAssignment().forEach(
+                structInstantiationAssignmentContext ->
+                    visitStructInstantiationAssignment( structInstantiationAssignmentContext, structName )
+            );
+        else
+            SemanticError.throwError( "La estructura '" + structName + "' no se encuentra declarada" );
         return null;
+    }
+    
+    public void visitStructInstantiationAssignment(
+        PsiCoderParser.StructInstantiationAssignmentContext ctx,
+        String structName
+    ) {
+        String structId = ctx.ID().getText();
+        if ( scope.searchId( structId ) == null ) {
+            if ( ctx.expression() != null ) {
+                PsiCoderType expressionResult = visit( ctx.expression() );
+                if ( expressionResult.isStruct() )
+                    scope.add( structId, expressionResult );
+                else
+                    SemanticError.throwError( "Intento de asignar un valor primitivo a la variable '"
+                        + structId + "' de tipo '" + structName + "'" );
+            } else
+                scope.add( structId,
+                    new PsiCoderType(
+                        new Struct(
+                            structName,
+                            Scope.structsDeclared.get( structName ).getAtomic(),
+                            Scope.structsDeclared.get( structName ).getCompound()
+                        )
+                    )
+                );
+        } else
+            SemanticError.throwError( "La variable '" + structId + "' ya se encuentra declarada" );
     }
     
     @Override
@@ -197,7 +223,6 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
         else if ( ctx.variableAssignment( 0 ) != null )
             ctx.variableAssignment().forEach( this::visitVariableAssignment );
         else return visitChildren( ctx );
-        
         return null;
     }
     
@@ -218,38 +243,33 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
     
     @Override
     public PsiCoderType visitRead( PsiCoderParser.ReadContext ctx ) {
-        String identifier = ctx.ID( 0 ).getText();
-        Object searchResult = scope.searchId( identifier );
-        if ( searchResult != null ) {
-            PsiCoderType value = readInput();
-            variableAssignment( identifier, searchResult, value, ctx.ID() );
-        } else
-            SemanticError.throwError( "Variable " + identifier + " no declarada" );
+        PsiCoderType value = readInput();
+        variableAssignment( value, ctx.ID() );
         return null;
     }
     
-    private void variableAssignment( String identifier, Object searchResult,
-                                     PsiCoderType value, List<TerminalNode> ids ) {
-        if ( ids.size() > 1 ) {
-            if ( !( searchResult instanceof PsiCoderType ) ) {
-                List<String> literals = ids
-                    .stream()
-                    .map( ParseTree::getText )
-                    .collect( Collectors.toList() );
-                scope.assignStructMember( literals, value );
-            } else
-                SemanticError.throwError( "Intento de acceder a las variables miembro de la"
-                    + " variable " + identifier + ", la cual no es de tipo estructura" );
-        } else {
-            if ( searchResult instanceof PsiCoderType ) {
-                if ( value.isReal() && ( ( PsiCoderType ) searchResult ).isInteger() )
+    private void variableAssignment( PsiCoderType value, List<TerminalNode> ids ) {
+        String identifier = ids.get( 0 ).getText();
+        PsiCoderType variable = scope.searchId( identifier );
+        if ( variable != null ) {
+            if ( ids.size() > 1 ) {
+                if ( variable.isStruct() ) {
+                    List<String> literals = ids
+                        .stream()
+                        .map( ParseTree::getText )
+                        .collect( Collectors.toList() );
+                    scope.assignToStructMember( literals, value );
+                } else
+                    SemanticError.throwError( "Intento de acceder a las variables miembro de la"
+                        + " variable '" + identifier + "', la cual no es de tipo estructura" );
+            } else {
+                if ( variable.isInteger() && value.isReal() )
                     scope.add( identifier, new PsiCoderType( value.toInteger() ) );
                 else
                     scope.add( identifier, value );
-            } else
-                SemanticError.throwError( "Intento de asignar una variable de tipo estructura"
-                    + " a una variable de tipo primitivo" );
-        }
+            }
+        } else
+            SemanticError.throwError( "La variable '" + identifier + "' no se encuentra declarada" );
     }
     
     @Override
@@ -258,12 +278,10 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
         int i = 0;
         while ( ctx.expression( i ) != null ) {
             PsiCoderType value = visit( ctx.expression( i ) );
-            if ( value.isBoolean() ) {
+            if ( value.isBoolean() )
                 toPrint += ( value.toBoolean() ? "verdadero" : "falso" );
-            } else {
+            else
                 toPrint += String.valueOf( value.getValue() );
-            }
-            
             i++;
         }
         System.out.println( toPrint );
@@ -292,7 +310,7 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
                 visitInstructions( ctx.instructions() );
             scope = scope.getParentScope();
         } else
-            SemanticError.throwError( "La expresion del ciclo mientras debe evaluar a un booleano" );
+            SemanticError.throwError( "La expresion del ciclo 'mientras' debe evaluar a un booleano" );
         return null;
     }
     
@@ -305,7 +323,7 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
             while ( visit( ctx.expression() ).toBoolean() );
             scope = scope.getParentScope();
         } else
-            SemanticError.throwError( "La expresion del ciclo hacer mientras debe evaluar a un booleano" );
+            SemanticError.throwError( "La expresion del ciclo 'hacer mientras' debe evaluar a un booleano" );
         return null;
     }
     
@@ -314,52 +332,41 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
         boolean loopVarOutOfScope = false;
         int expressionIndex = 0;
         String loopVarId = ctx.ID( 0 ).getText();
-        
         if ( ctx.DATA_TYPE() != null ) {
             if ( ctx.DATA_TYPE().getText().equals( "entero" ) ) {
                 scope = new Scope( scope, false );
-                if ( ctx.expression().size() > 1 ) {
-                    PsiCoderType loopVar = visit( ctx.expression( expressionIndex++ ) );
-                    if ( loopVar.isInteger() )
-                        scope.add( loopVarId, loopVar );
-                    else
-                        SemanticError.throwError( "El valor asignado a la variable " + loopVarId + " debe ser un entero" );
-                } else
+                if ( ctx.expression().size() > 1 )
+                    expressionIndex = determineForLoopVar( ctx, expressionIndex, loopVarId );
+                else
                     scope.add( loopVarId, getDefaultValueByDataType( "entero" ) );
             } else
-                SemanticError.throwError( "La variable " + loopVarId + " debe ser de tipo entero" );
+                SemanticError.throwError( "La variable '" + loopVarId + "' debe ser de tipo entero" );
         } else {
             loopVarOutOfScope = true;
-            Object searchResult = scope.searchId( loopVarId );
+            PsiCoderType searchResult = scope.searchId( loopVarId );
             if ( searchResult != null ) {
-                if ( searchResult instanceof PsiCoderType
-                    && ( ( PsiCoderType ) searchResult ).isInteger() ) {
-                    if ( ctx.expression().size() > 1 ) {
-                        PsiCoderType loopVar = visit( ctx.expression( expressionIndex++ ) );
-                        if ( loopVar.isInteger() ) {
-                            scope.add( loopVarId, loopVar );
-                        } else
-                            SemanticError.throwError( "El valor asignado a la variable " + loopVarId + " debe ser un entero" );
-                    }
+                if ( searchResult.isInteger() ) {
+                    if ( ctx.expression().size() > 1 )
+                        expressionIndex = determineForLoopVar( ctx, expressionIndex, loopVarId );
                     scope = new Scope( scope, false );
                 } else
-                    SemanticError.throwError( "La variable " + loopVarId + " debe ser de tipo entero" );
+                    SemanticError.throwError( "La variable '" + loopVarId + "' debe ser de tipo entero" );
             } else
-                SemanticError.throwError( "La variable " + loopVarId + " no se encuentra declarada" );
+                SemanticError.throwError( "La variable '" + loopVarId + "' no se encuentra declarada" );
         }
         
         if ( visit( ctx.expression( expressionIndex ) ).isBoolean() ) {
             int loopStep = 0;
             if ( ctx.ID( 1 ) != null ) {
-                Object loopStepSearchResult = scope.searchId( ctx.ID( 1 ).getText() );
-                if ( loopStepSearchResult != null ) {
-                    PsiCoderType loopStepResult = ( PsiCoderType ) loopStepSearchResult;
+                String identifier = ctx.ID( 1 ).getText();
+                PsiCoderType loopStepResult = scope.searchId( identifier );
+                if ( loopStepResult != null ) {
                     if ( loopStepResult.isInteger() ) {
                         loopStep = loopStepResult.toInteger();
                     } else
-                        SemanticError.throwError( "La variable " + ctx.ID( 1 ).getText() + " debe ser de tipo entero" );
+                        SemanticError.throwError( "La variable '" + identifier + "' debe ser de tipo entero" );
                 } else
-                    SemanticError.throwError( "La variable " + ctx.ID( 1 ).getText() + "no ha sido declarada" );
+                    SemanticError.throwError( "La variable '" + identifier + "' no ha sido declarada" );
             } else
                 loopStep = Integer.parseInt( ctx.INT().getText() );
             
@@ -367,15 +374,11 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
                 visitInstructions( ctx.instructions() );
                 PsiCoderType updatedLoopVarId;
                 if ( loopVarOutOfScope ) {
-                    updatedLoopVarId = new PsiCoderType(
-                        ( Integer ) ( ( PsiCoderType ) scope.getParentScope().searchId( loopVarId ) ).getValue() + loopStep
-                    );
+                    updatedLoopVarId = new PsiCoderType( scope.getParentScope().searchId( loopVarId ).toInteger() + loopStep );
                     updatedLoopVarId.toInteger();
                     scope.getParentScope().add( loopVarId, updatedLoopVarId );
                 } else {
-                    updatedLoopVarId = new PsiCoderType(
-                        ( Integer ) ( ( PsiCoderType ) scope.searchId( loopVarId ) ).getValue() + loopStep
-                    );
+                    updatedLoopVarId = new PsiCoderType( scope.searchId( loopVarId ).toInteger() + loopStep );
                     updatedLoopVarId.toInteger();
                     scope.add( loopVarId, updatedLoopVarId );
                 }
@@ -386,9 +389,20 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
         return null;
     }
     
+    private int determineForLoopVar( PsiCoderParser.ForLoopContext ctx, int expressionIndex, String loopVarId ) {
+        PsiCoderType loopVar = visit( ctx.expression( expressionIndex++ ) );
+        if ( loopVar.isInteger() ) {
+            scope.add( loopVarId, loopVar );
+        } else
+            SemanticError.throwError( "El valor asignado a la variable '" + loopVarId + "' debe ser un entero" );
+        return expressionIndex;
+    }
+    
     @Override
     public PsiCoderType visitMultSelection( PsiCoderParser.MultSelectionContext ctx ) {
         PsiCoderType expression = visit( ctx.expression() );
+        if ( expression.isStruct() )
+            SemanticError.throwError( "El argumento de seleccionar no puede ser de tipo estructura." );
         int i = 0;
         if ( ctx.CASE( i ) != null ) {
             do {
@@ -402,11 +416,12 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
                     }
                 } else
                     SemanticError.throwError( "El valor de la variable de seleccion es diferente"
-                        + " al valor evaluado por el caso: " + caseValue.getValue() );
+                        + " al valor evaluado por el caso: '" + caseValue.getValue() + "'" );
             } while ( ctx.CASE( ++i ) != null );
-            return ( ctx.defaultCase() != null ? visitDefaultCase( ctx.defaultCase() ) : null );
+            if ( ctx.defaultCase() != null ) visitDefaultCase( ctx.defaultCase() );
         } else
-            return visitDefaultCase( ctx.defaultCase() );
+            visitDefaultCase( ctx.defaultCase() );
+        return null;
     }
     
     public PsiCoderType visitDefaultCase( PsiCoderParser.DefaultCaseContext ctx ) {
@@ -421,7 +436,7 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
         String identifier = ctx.ID().getText() + ctx.expression().size();
         Function function = functions.get( identifier );
         if ( function == null )
-            SemanticError.throwError( "La funcion " + ctx.ID().getText() + " no se "
+            SemanticError.throwError( "La funcion '" + ctx.ID().getText() + "' no se "
                 + "encuentra definida o el número de argumentos es inválido" );
         List<PsiCoderType> functionArguments = ctx.expression()
             .stream()
@@ -440,7 +455,7 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
             return new PsiCoderType( ctx.STRING().getText().split( "\"" )[ 1 ] );
         if ( ctx.CHAR() != null )
             return new PsiCoderType( ctx.CHAR().getText().charAt( 1 ) );
-        return new PsiCoderType( Boolean.valueOf( ctx.BOOLEAN().getText().equals( "verdadero" ) ) );
+        return new PsiCoderType( ctx.BOOLEAN().getText().equals( "verdadero" ) );
     }
     
     @Override
@@ -464,7 +479,7 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
     public PsiCoderType visitMultExpression( PsiCoderParser.MultExpressionContext ctx ) {
         PsiCoderType leftExprResult = visit( ctx.expression( 0 ) );
         PsiCoderType rightExprResult = visit( ctx.expression( 1 ) );
-        if ( !leftExprResult.isNumber() && !rightExprResult.isReal() )
+        if ( !leftExprResult.isNumber() && !rightExprResult.isNumber() )
             SemanticError.throwError( "La multiplicacion, division y modulo solo pueden hacerse entre enteros y reales." );
         if ( leftExprResult.isInteger() && rightExprResult.isInteger() ) {
             Integer operationResult = leftExprResult.toInteger();
@@ -546,8 +561,8 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
     public PsiCoderType visitOrExpression( PsiCoderParser.OrExpressionContext ctx ) {
         PsiCoderType leftExprResult = visit( ctx.expression( 0 ) );
         PsiCoderType rightExprResult = visit( ctx.expression( 1 ) );
-        if ( !leftExprResult.isBoolean() || !rightExprResult.isBoolean() )
-            SemanticError.throwError( "Error semantico, ambos terminos de la expresion logica 'or' deben ser de tipo booleano." );
+        if ( !( leftExprResult.isBoolean() || !rightExprResult.isBoolean() ) )
+            SemanticError.throwError( "Ambos terminos de la expresion logica 'or' deben ser de tipo booleano." );
         return new PsiCoderType( leftExprResult.toBoolean() || rightExprResult.toBoolean() );
     }
     
@@ -561,22 +576,19 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
         return visitPrimitiveValue( ctx.primitiveValue() );
     }
     
-    @Override
     public PsiCoderType visitIdExpression( PsiCoderParser.IdExpressionContext ctx ) {
-        List<String> memberChain = ctx.ID()
+        List<String> literals = ctx.ID()
             .stream()
             .map( ParseTree::getText )
             .collect( Collectors.toList() );
-        String identifier = memberChain.get( 0 );
         int i = 1;
-        if ( memberChain.size() > i )
-            return scope.getStructMemberValue( memberChain );
-        Object value = scope.searchId( identifier );
+        if ( literals.size() > i )
+            return scope.getStructMemberValue( literals );
+        String identifier = literals.get( 0 );
+        PsiCoderType value = scope.searchId( identifier );
         if ( value == null )
-            SemanticError.throwError( "La variable " + identifier + " no ha sido declarada" );
-        else if ( !( value instanceof PsiCoderType ) )
-            SemanticError.throwError( "No se puede emplear la variable " + identifier + " de tipo estructura en una expresion" );
-        return ( PsiCoderType ) value;
+            SemanticError.throwError( "La variable '" + identifier + "' no ha sido declarada" );
+        return value;
     }
     
     @Override
@@ -600,7 +612,7 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
         else if ( leftExpr.isNumber() && rightExpr.isNumber() )
             return new PsiCoderType( leftExpr.toReal() <= rightExpr.toReal() );
         else
-            SemanticError.throwError( "Error semantico, la comparacion menor igual que solo puede hacerse entre "
+            SemanticError.throwError( "La comparacion menor igual que solo puede hacerse entre "
                 + "enteros y reales o entre solo cadenas" );
         return null;
     }

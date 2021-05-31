@@ -10,9 +10,11 @@ structDeclaration: 'estructura' ID structMember+ 'fin_estructura';
                     
 structMember: DATA_TYPE ID (',' ID)* ';'
             | ID ID (',' ID)* ';' ;
-
-functionDeclaration: 'funcion' DATA_TYPE ID '(' (DATA_TYPE ID (',' DATA_TYPE ID)*)? ')'
+                      
+functionDeclaration: 'funcion' dataType ID '(' (dataType ID (',' dataType ID)*)? ')'
                       'hacer' instructions returnExpression 'fin_funcion';
+
+dataType: DATA_TYPE | ID;
 
 returnExpression: 'retornar' expression ';';
 
@@ -20,7 +22,9 @@ variableDeclaration: ID ('=' expression)?;
 
 variableAssignment: ID ('.' ID)* '=' expression;
 
-structInstantiation: ID ID (',' ID)* ';';
+structInstantiation: ID structInstantiationAssignment (',' structInstantiationAssignment)* ';';
+
+structInstantiationAssignment: ID ('=' expression)?;
 
 instructions: instruction instructions | ;
 

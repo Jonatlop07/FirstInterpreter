@@ -18,23 +18,31 @@ public class Function {
         this.returnExpCtx = returnExpCtx;
     }
     
-    public PsiCoderType makeCall( String identifier, List<PsiCoderType> arguments,
-                                  Map<String, Function> functions ) {
+    public PsiCoderType makeCall( String identifier, List<PsiCoderType> arguments, Map<String, Function> functions ) {
         Scope scope = new Scope( parentScope, true );
         for ( int i = 0; i < arguments.size(); ++i ) {
-            if ( !arguments.get( i ).isCompatible( parameters.get( i ).getValue() ) )
-                SemanticError.throwError( "En la funcion " + identifier + ", tipo "
-                    + "incorrecto en el argumento " + parameters.get( i ).getIdentifier() );
-            scope.add( parameters.get( i ).getIdentifier(), arguments.get( i ) );
+            String parameterIdentifier = parameters.get( i ).getIdentifier();
+            PsiCoderType parameterValue = parameters.get( i ).getValue();
+            if ( parameterValue.isCompatible( arguments.get( i ) ) ) {
+                if (
+                    parameterValue.isStruct()
+                        && !parameterValue.toStruct().getType().equals( arguments.get( i ).toStruct().getType() )
+                )
+                    SemanticError.throwError( "En la funcion '" + identifier + "', tipo "
+                        + "de estructura incorrecto en el parametro '" + parameterIdentifier + "'" );
+                scope.add( parameterIdentifier, arguments.get( i ) );
+            } else
+                SemanticError.throwError( "En la funcion '" + identifier + "', tipo "
+                    + "incorrecto en el parametro '" + parameterIdentifier + "'" );
         }
         PsiCoderVisitorImpl functionVisitor = new PsiCoderVisitorImpl( scope, functions );
         functionVisitor.visit( instructionsCtx );
         PsiCoderType returnValue = functionVisitor.visitReturnExpression(
             ( PsiCoderParser.ReturnExpressionContext ) returnExpCtx
         );
+        
         if ( !returnType.isCompatible( returnValue ) )
-            SemanticError.throwError( "En la funcion " + identifier + ", valor de retorno "
-                + " del tipo incorrecto" );
+            SemanticError.throwError( "En la funcion '" + identifier + "', el valor retornado es de un tipo incorrecto" );
         return returnValue;
     }
 }

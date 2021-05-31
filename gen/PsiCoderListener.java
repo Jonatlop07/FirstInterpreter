@@ -57,6 +57,16 @@ public interface PsiCoderListener extends ParseTreeListener {
 	 */
 	void exitFunctionDeclaration(PsiCoderParser.FunctionDeclarationContext ctx);
 	/**
+	 * Enter a parse tree produced by {@link PsiCoderParser#dataType}.
+	 * @param ctx the parse tree
+	 */
+	void enterDataType(PsiCoderParser.DataTypeContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PsiCoderParser#dataType}.
+	 * @param ctx the parse tree
+	 */
+	void exitDataType(PsiCoderParser.DataTypeContext ctx);
+	/**
 	 * Enter a parse tree produced by {@link PsiCoderParser#returnExpression}.
 	 * @param ctx the parse tree
 	 */
@@ -96,6 +106,16 @@ public interface PsiCoderListener extends ParseTreeListener {
 	 * @param ctx the parse tree
 	 */
 	void exitStructInstantiation(PsiCoderParser.StructInstantiationContext ctx);
+	/**
+	 * Enter a parse tree produced by {@link PsiCoderParser#structInstantiationAssignment}.
+	 * @param ctx the parse tree
+	 */
+	void enterStructInstantiationAssignment(PsiCoderParser.StructInstantiationAssignmentContext ctx);
+	/**
+	 * Exit a parse tree produced by {@link PsiCoderParser#structInstantiationAssignment}.
+	 * @param ctx the parse tree
+	 */
+	void exitStructInstantiationAssignment(PsiCoderParser.StructInstantiationAssignmentContext ctx);
 	/**
 	 * Enter a parse tree produced by {@link PsiCoderParser#instructions}.
 	 * @param ctx the parse tree

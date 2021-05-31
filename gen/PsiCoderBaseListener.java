@@ -75,6 +75,18 @@ public class PsiCoderBaseListener implements PsiCoderListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterDataType(PsiCoderParser.DataTypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitDataType(PsiCoderParser.DataTypeContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterReturnExpression(PsiCoderParser.ReturnExpressionContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -118,6 +130,18 @@ public class PsiCoderBaseListener implements PsiCoderListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitStructInstantiation(PsiCoderParser.StructInstantiationContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterStructInstantiationAssignment(PsiCoderParser.StructInstantiationAssignmentContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitStructInstantiationAssignment(PsiCoderParser.StructInstantiationAssignmentContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

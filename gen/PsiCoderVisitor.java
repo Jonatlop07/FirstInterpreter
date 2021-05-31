@@ -40,6 +40,12 @@ public interface PsiCoderVisitor<T> extends ParseTreeVisitor<T> {
 	 */
 	T visitFunctionDeclaration(PsiCoderParser.FunctionDeclarationContext ctx);
 	/**
+	 * Visit a parse tree produced by {@link PsiCoderParser#dataType}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitDataType(PsiCoderParser.DataTypeContext ctx);
+	/**
 	 * Visit a parse tree produced by {@link PsiCoderParser#returnExpression}.
 	 * @param ctx the parse tree
 	 * @return the visitor result
@@ -63,6 +69,12 @@ public interface PsiCoderVisitor<T> extends ParseTreeVisitor<T> {
 	 * @return the visitor result
 	 */
 	T visitStructInstantiation(PsiCoderParser.StructInstantiationContext ctx);
+	/**
+	 * Visit a parse tree produced by {@link PsiCoderParser#structInstantiationAssignment}.
+	 * @param ctx the parse tree
+	 * @return the visitor result
+	 */
+	T visitStructInstantiationAssignment(PsiCoderParser.StructInstantiationAssignmentContext ctx);
 	/**
 	 * Visit a parse tree produced by {@link PsiCoderParser#instructions}.
 	 * @param ctx the parse tree

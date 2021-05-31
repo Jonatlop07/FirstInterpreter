@@ -54,14 +54,15 @@ public class PsiCoderType implements Comparable<PsiCoderType> {
         return value instanceof String;
     }
     
+    public Struct toStruct() { return ( Struct ) value; }
+    
+    public boolean isStruct() { return value instanceof Struct; }
+    
     @Override
     public int compareTo( PsiCoderType other ) {
         if ( this.isNumber() && other.isNumber() ) {
-            if ( this.equals( other ) ) {
-                return 0;
-            } else {
-                return this.toReal().compareTo( other.toReal() );
-            }
+            if ( this.equals( other ) ) return 0;
+            return this.toReal().compareTo( other.toReal() );
         } else if ( this.isString() && other.isString() )
             return this.toStringType().compareTo( other.toStringType() );
         else if ( this.isCharacter() && other.isCharacter() )
@@ -86,6 +87,7 @@ public class PsiCoderType implements Comparable<PsiCoderType> {
             || ( this.isBoolean() && other.isBoolean() )
             || ( this.isCharacter() && other.isCharacter() )
             || ( this.isString() && other.isString() )
+            || ( this.isStruct() && other.isStruct() )
         );
     }
 }
