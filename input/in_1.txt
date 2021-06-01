@@ -1,5 +1,16 @@
 funcion_principal
-  entero a = 1;
-  real x,y=0,z;
-  imprimir( a );
+    imprimir("Caso 1: Declaracion de variables");
+    entero a;
+    real b;
+    booleano c;
+    cadena d;
+    caracter e;
+    imprimir("Valor predeterminado de las variables declaradas sin asignacion:");
+    imprimir("Entero: a -> ", a);
+    imprimir("Real: b -> ", b);
+    imprimir("Booleano: c -> ", c);
+    imprimir("Cadena: d -> ", d);
+    imprimir("Caracter: e -> ", e, " (caracter vacio)");
+    imprimir("Impresion de variable no declarada: f -> ");
+    imprimir(f);
 fin_principal

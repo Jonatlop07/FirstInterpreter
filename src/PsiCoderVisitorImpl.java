@@ -451,8 +451,11 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
             return new PsiCoderType( Integer.valueOf( ctx.INT().getText() ) );
         if ( ctx.REAL() != null )
             return new PsiCoderType( Double.valueOf( ctx.REAL().getText() ) );
-        if ( ctx.STRING() != null )
-            return new PsiCoderType( ctx.STRING().getText().split( "\"" )[ 1 ] );
+        if ( ctx.STRING() != null ) {
+            return new PsiCoderType(
+                ctx.STRING().getText().substring( 1, ctx.STRING().getText().length() - 1 )
+            );
+        }
         if ( ctx.CHAR() != null )
             return new PsiCoderType( ctx.CHAR().getText().charAt( 1 ) );
         return new PsiCoderType( ctx.BOOLEAN().getText().equals( "verdadero" ) );
@@ -501,9 +504,9 @@ public class PsiCoderVisitorImpl extends PsiCoderBaseVisitor<PsiCoderType> {
         PsiCoderType rightExprResult = visit( ctx.expression( 1 ) );
         if ( ctx.AD_OP().getText().equals( "+" ) ) {
             if ( leftExprResult.isString() )
-                return new PsiCoderType( leftExprResult.toStringType() + "" + rightExprResult.toString() );
+                return new PsiCoderType( leftExprResult.toStringType() + rightExprResult.toStringType() );
             if ( rightExprResult.isString() )
-                return new PsiCoderType( leftExprResult.toString() + "" + rightExprResult.toStringType() );
+                return new PsiCoderType( leftExprResult.toStringType() + rightExprResult.toStringType() );
         }
         if ( !leftExprResult.isNumber() || !rightExprResult.isNumber() )
             SemanticError.throwError( "La suma y resta solo pueden hacerse entre enteros y reales,"

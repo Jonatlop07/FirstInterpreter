@@ -1,7 +1,7 @@
 public class SemanticError {
     private SemanticError() { }
     
-    public static void throwError(String message, int row, int column ) {
+    public static void throwError( String message, int row, int column ) {
         System.err.printf( "Error semantico-(%d : %d): %s", row, column, message );
         System.exit( -1 );
     }

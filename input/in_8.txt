@@ -1,3 +1,5 @@
 funcion_principal
-    imprimir (3+5);
+  entero a = 1;
+  real x,y=0,z;
+  imprimir( a );
 fin_principal

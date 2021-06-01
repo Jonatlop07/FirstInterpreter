@@ -1,22 +1,10 @@
 funcion_principal
-    entero num1 = 5, num2 = 2, b = 5, res;
-    si ( num1 > num2 ) entonces
-       res = num1;
-       si( res == b ) entonces
-            imprimir("Test if");
-        si_no
-            imprimir("Test sino");
-        fin_si
-    si_no
-       res = num2;
-    fin_si
-
-    si ( num1 > num2 ) entonces
-       res = num1;
-       si( res == b ) entonces
-            imprimir("Test if");
-       fin_si
-    si_no
-       res = num2;
-    fin_si
+    entero p = 2, a = 5, j;
+    para ( entero i = 0 ; i < a ; 1 ) hacer
+        imprimir( "Primer loop: ", i );
+    fin_para
+    entero i = 1;
+    para ( j = 0; i < a && j  < 50  ; p ) hacer
+        imprimir(j);
+    fin_para
 fin_principal

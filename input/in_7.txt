@@ -1,7 +1,58 @@
+estructura Fecha
+    entero dia;
+    entero mes;
+    entero anio;
+fin_estructura
+
+estructura Evento
+    cadena nombre;
+    Fecha fecha;
+fin_estructura
+
+funcion Fecha crearFecha(entero dia, entero mes, entero anio) hacer
+    Fecha nuevaFecha;
+    nuevaFecha.dia = dia;
+    nuevaFecha.mes = mes;
+    nuevaFecha.anio = anio;
+    retornar nuevaFecha;
+fin_funcion
+
+funcion Fecha fechaPasadosXDias(Fecha fecha, entero x) hacer
+    entero mesesIniciales = fecha.mes;
+    entero sumaDias = fecha.dia + x;
+    fecha.dia = sumaDias % 30;
+    entero sumaMeses = fecha.mes + (x / 30);
+    fecha.mes = sumaMeses % 12;
+    entero totalDias = sumaDias + (mesesIniciales - 1) * 30;
+    fecha.anio = fecha.anio + totalDias / 360;
+    retornar fecha;
+fin_funcion
+
 funcion_principal
-    real a = 5.4;
-    hacer
-        a = a/2;
-        imprimir(a);
-    mientras( a > 1 );
+    imprimir("Caso 7: Estructuras");
+    imprimir("Estructura: Tipo -> Fecha ; Miembros: { entero dia, entero mes, entero anio }");
+    imprimir("Estructura: Tipo -> Evento ; Miembros: { cadena nombre, Fecha fecha }");
+    imprimir("Evento 'e1', con nombre = 'Entrega de proyectos' y fecha: ( dia: 23, mes: 4, anio: 2021 )");
+    imprimir("El interprete permite imprimir las estructuras");
+    
+    Evento e1;
+    e1.nombre = "Entrega de proyectos";
+    e1.fecha = crearFecha(23, 4, 2021);
+    
+    imprimir("e1: ", e1);
+    
+    imprimir("Evento 'e2', evento igual al anterior (copia de 'e1')");
+    
+    Evento e2 = e1;
+    
+    imprimir("e2: ", e2);
+    
+    imprimir("Evento 'e3', evento cuya fecha es 292 dias despues de 'e1'");
+    imprimir("Para el calculo de la nueva fecha se emplea la funcion:");
+    imprimir("Fecha fechaPasadosXDias(Fecha fechaInicial, entero x)");
+    
+    Evento e3;
+    e3.nombre = "Entrega de proyectos V2";
+    e3.fecha = fechaPasadosXDias(e1.fecha, 292);
+    imprimir("e3: ", e3);
 fin_principal

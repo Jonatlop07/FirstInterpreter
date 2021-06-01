@@ -1,7 +1,35 @@
+funcion entero sum(entero a, entero b) hacer
+    retornar a + b;
+fin_funcion
+
+funcion entero res(entero a, entero b) hacer
+    retornar a - b;
+fin_funcion
+
+funcion entero mul(entero a, entero b) hacer
+    retornar a * b;
+fin_funcion
+
 funcion_principal
-    entero a = 10; 
-    mientras ( a > 0 ) hacer
-       a = a - 1;  
-       imprimir(a);                                      
-    fin_mientras
+    imprimir("Caso 6: Declaracion y llamados de funciones:");
+    imprimir("Variables: x, y, z. Todas reales con valor predeterminado");
+    imprimir("Variables: p = 2, a = 5, j. Todas enteras");
+    
+    real z,x,y;
+    entero p = 2, a = 5, j;
+    
+    imprimir("Funcion: entero sum(entero a, entero b) -> a + b");
+    imprimir("Funcion: entero res(entero a, entero b) -> a - b");
+    imprimir("Funcion: entero mul(entero a, entero b) -> a * b");
+    j = sum(p,a);
+    imprimir("j = sum(p, a): ", j);
+    a = res(p,j);
+    imprimir("a = res(p, j): ", a);
+    j = mul(p,a);
+    imprimir("j = mul(p, a): ", j);
+    
+    imprimir("sum(1, 2) + res(4, 2) + mul(3, 3): ", sum(1, 2) + res(4, 2) + mul(3, 3));
+    
+    imprimir("Genera error: sum('hola', 2), el primer argumento no es de tipo entero");
+    imprimir(sum("hola", 2));
 fin_principal

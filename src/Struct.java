@@ -4,7 +4,7 @@ import java.util.Map;
 
 public class Struct {
     
-    private String type;
+    private final String type;
     private Map<String, PsiCoderType> members;
     
     public Struct( String type, Map<String, PsiCoderType> primitiveTypeMembers,
@@ -69,5 +69,26 @@ public class Struct {
     
     public String getType() {
         return type;
+    }
+    
+    @Override
+    public String toString() {
+        String stringRepresentation = "{ ";
+        Iterator<String> membersIterator = members.keySet().stream().iterator();
+        while ( membersIterator.hasNext() ) {
+            String memberIdentifier = membersIterator.next();
+            stringRepresentation += memberIdentifier + ": ";
+            PsiCoderType member = members.get( memberIdentifier );
+            if ( member.isStruct() ) {
+                stringRepresentation += member.toStruct().toString();
+            } else {
+                stringRepresentation += String.valueOf( member.getValue() );
+            }
+            stringRepresentation += ", ";
+        }
+        if ( stringRepresentation.length() > 2 ) {
+            stringRepresentation = stringRepresentation.substring( 0, stringRepresentation.length() - 2 );
+        }
+        return stringRepresentation + " }";
     }
 }

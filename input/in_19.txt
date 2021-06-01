@@ -1,35 +1,22 @@
-estructura Tiempo
-    entero dia;
-    entero mes;
-    entero anio;
-fin_estructura
-
-estructura st1
-    Tiempo tiempo;
-    entero a;
-fin_estructura
-
-funcion Tiempo obtenerTiempoAumentado(Tiempo tiempo, entero a) hacer
-    tiempo.dia = tiempo.dia + 2;
-    tiempo.mes = tiempo.mes + 2;
-    tiempo.anio = tiempo.anio + 2;
-    retornar tiempo;
-fin_funcion
-
 funcion_principal
-    Tiempo t1, t2;
-    t1.dia = 4;
-    imprimir(t1.dia);
-    st1 id;
-    id.a = 1;
-    id.tiempo = t1;
-    st1 id2 = id;
-    id2.tiempo.dia = 6;
-    id2.tiempo.mes = 5;
-    id2.tiempo.anio = 4;
-    imprimir(id2.tiempo.dia);
-    t2 = obtenerTiempoAumentado(id2.tiempo, 2);
-    imprimir(t2.dia);
-    imprimir(t2.mes);
-    imprimir(t2.anio);
+    entero num1 = 5, num2 = 2, b = 5, res;
+    si ( num1 > num2 ) entonces
+       res = num1;
+       si( res == b ) entonces
+            imprimir("Test if");
+        si_no
+            imprimir("Test sino");
+        fin_si
+    si_no
+       res = num2;
+    fin_si
+
+    si ( num1 > num2 ) entonces
+       res = num1;
+       si( res == b ) entonces
+            imprimir("Test if");
+       fin_si
+    si_no
+       res = num2;
+    fin_si
 fin_principal

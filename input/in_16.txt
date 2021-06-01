@@ -1,52 +1,14 @@
+funcion entero sum(entero a, entero b) hacer
+    retornar a + b;
+fin_funcion
+
 funcion_principal
-    imprimir("Caso 4: Condicional y seleccion multiple:");
-    imprimir("Condicional: ");
-    imprimir("Variable: a = 1, condicion a < 2:");
-    entero a = 1, b = 3;
-    si (a < 2) entonces
-        imprimir("Se cumple");
-    si_no
-        imprimir("No se cumple");
-    fin_si
-    imprimir("Variable: b = 3, condicion a < 2:");
-    si (b < 2) entonces
-        imprimir("Se cumple");
-    si_no
-        imprimir("No se cumple");
-    fin_si
-    imprimir("Seleccion multiple, sin caso por defecto:");
-    imprimir("Variable: c = 'seleccion', casos: ('seleccionar', 'selecto', 'seleccion')");
-    cadena c = "seleccion";
-    seleccionar(c) entre
-        caso "seleccionar":
-            imprimir("Entra a seleccionar");
-            romper;
-        caso "selecto":
-            imprimir("Entra a selecto");
-            romper;
-        caso "seleccion":
-            imprimir("Entra a seleccion");
-            romper;
-    fin_seleccionar
-    imprimir("Seleccion multiple, con un solo caso: 'b' y uno por defecto:");
-    imprimir("Variable: d = 'a'");
-    caracter d = 'a';
-    seleccionar (d) entre
-        caso 'b':
-            imprimir("Entra a caso 'b'");
-            romper;
-        defecto:
-            imprimir("Entra a defecto");
-    fin_seleccionar
-    imprimir("Genera error: valor del caso diferente al tipo de la variable de seleccion:");
-    imprimir("Variable: e = 'var', casos: (32, 'var')");
-    cadena e = "var";
-    seleccionar (e) entre
-        caso 32:
-            imprimir("Entra a caso 32");
-            romper;
-        caso "var":
-            imprimir("Entra a caso 'var'");
-            romper;
-    fin_seleccionar
+
+    imprimir( sum(1,2));
+
 fin_principal
+
+estructura Point
+    entero a;
+    entero b;
+fin_estructura

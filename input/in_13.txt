@@ -1,16 +1,7 @@
 funcion_principal
-    imprimir("Caso 1: Declaracion de variables");
-    entero a;
-    real b;
-    booleano c;
-    cadena d;
-    caracter e;
-    imprimir("Valor predeterminado de las variables declaradas sin asignacion:");
-    imprimir("Entero: a -> ", a);
-    imprimir("Real: b -> ", b);
-    imprimir("Booleano: c -> ", c);
-    imprimir("Cadena: d -> ", d);
-    imprimir("Caracter: e -> ", e, " (caracter vacio)");
-    imprimir("Impresion de variable no declarada: f -> ");
-    imprimir(f);
+    entero a = 10; 
+    mientras ( a > 0 ) hacer
+       a = a - 1;  
+       imprimir(a);                                      
+    fin_mientras
 fin_principal

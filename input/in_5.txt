@@ -1,10 +1,48 @@
 funcion_principal
-    entero p = 2, a = 5, j;
-    para ( entero i = 0 ; i < a ; 1 ) hacer
-        imprimir( "Primer loop: ", i );
+    imprimir("Caso 5: Ciclos 'mientras', 'hacer mientras' y 'para'");
+    imprimir("Ciclo mientras:");
+    imprimir("Variable: a = 10 de tipo entero, condicion: a >= 0");
+    imprimir("Instrucciones del ciclo: imprimir la variable 'a' y seguido restarle 2");
+    
+    entero a = 10;
+    mientras(a >= 0) hacer
+        imprimir("Mientras: a = ", a);
+        a = a - 2;
+    fin_mientras
+    
+    imprimir("Ciclo hacer mientras:");
+    imprimir("Variable: x = 100.2 de tipo real");
+    imprimir("Variable: b = '' de tipo cadena (vacia), condicion: b diferente a 'bbbbbbbb'");
+    imprimir("Instrucciones del ciclo:");
+    imprimir("Imprimir la variable 'b'");
+    imprimir("En un ciclo mientras se imprime 'x' y se reduce a la mitad mientras sea mayor a 10'");
+    imprimir("Concatenar la cadena 'bb' a la variable 'b''");
+    
+    real x = 100.2;
+    cadena b = "bb";
+    hacer
+        imprimir("Hacer mientras: b = ", b);
+        
+        mientras(x > 10) hacer
+            imprimir("Hacer mientras-mientras: x = ", x);
+            x = x / 2;
+        fin_mientras
+        
+        b = b + "bb";
+    mientras(b != "bbbbbbbb");
+    
+    imprimir("Ciclo para:");
+    imprimir("Variable de ciclo: c de tipo entero, condicion: c % 12 menor que 9");
+    imprimir("Tamanio del paso: variable d entera con valor 2");
+    imprimir("Instrucciones del ciclo: imprimir c % 12");
+    
+    entero d = 2;
+    para (entero c; c % 12 < 9; d) hacer
+        imprimir("Para: c % 12 = ", c % 12);
     fin_para
-    entero i = 1;
-    para ( j = 0; i < a && j  < 50  ; p ) hacer
-        imprimir(j);
-    fin_para
+    
+    imprimir("Genera error: ciclo 'mientras' cuya expresion (5 + 4 % 6) no evalua a un booleano");
+    
+    mientras(5 + 4 % 6) hacer
+    fin_mientras
 fin_principal
